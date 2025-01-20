@@ -17,7 +17,7 @@ export class ChatsService {
   }
 
   async findAll() {
-    return `This action returns all chats`;
+    return await this.chatRepository.find();
   }
 
   findOne(id: number) {
