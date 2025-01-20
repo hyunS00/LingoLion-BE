@@ -20,8 +20,8 @@ export class ChatsService {
     return await this.chatRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
+  async findOne(id: number) {
+    return await this.chatRepository.findOne({ where: { id } });
   }
 
   update(id: number, updateChatDto: UpdateChatDto) {
