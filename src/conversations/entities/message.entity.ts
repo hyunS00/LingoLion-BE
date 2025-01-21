@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Chat } from './chat.entity';
+import { Conversation } from './conversation.entity';
 import { BaseTable } from 'src/common/entities/base-table.entity';
 
 export enum Sender {
   system = 'system',
-  ai = 'ai',
+  assistant = 'assistant',
   user = 'user',
 }
 @Entity()
@@ -20,9 +20,9 @@ export class Message extends BaseTable {
   @Column()
   content: string;
 
-  @ManyToOne(() => Chat, (chat) => chat.messages, {
+  @ManyToOne(() => Conversation, (conversation) => conversation.messages, {
     cascade: true,
     nullable: false,
   })
-  chat: Chat;
+  conversation: Conversation;
 }

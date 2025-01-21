@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ChatsModule } from './chats/chats.module';
+import { ConversationsModule } from './conversations/conversations.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Chat } from './chats/entities/chat.entity';
-import { Message } from './chats/entities/message.entity';
+import { Conversation } from './conversations/entities/conversation.entity';
+import { Message } from './conversations/entities/message.entity';
+import { OpenAiModule } from './openAi/openai.module';
 
 @Module({
   imports: [
@@ -16,12 +17,13 @@ import { Message } from './chats/entities/message.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [Chat, Message],
+        entities: [Conversation, Message],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    ChatsModule,
+    ConversationsModule,
+    OpenAiModule,
   ],
   controllers: [],
   providers: [],
