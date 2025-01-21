@@ -7,9 +7,9 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ChatsService } from './chats.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
+import { ChatsService } from '../services/chats.service';
+import { CreateChatDto } from '../dto/create-chat.dto';
+import { UpdateChatDto } from '../dto/update-chat.dto';
 
 @Controller('chats')
 export class ChatsController {
@@ -25,18 +25,18 @@ export class ChatsController {
     return this.chatsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(':chatId')
+  findOne(@Param('chatId') id: string) {
     return this.chatsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
+  @Patch(':chatId')
+  update(@Param('chatId') id: string, @Body() updateChatDto: UpdateChatDto) {
     return this.chatsService.update(+id, updateChatDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(':chatId')
+  remove(@Param('chatId') id: string) {
     return this.chatsService.remove(+id);
   }
 }

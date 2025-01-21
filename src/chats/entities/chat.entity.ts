@@ -7,6 +7,6 @@ export class Chat extends BaseTable {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => Message, (message) => message.id)
-  messeages: Message[];
+  @OneToMany(() => Message, (message) => message.chat)
+  messages: Message[];
 }
