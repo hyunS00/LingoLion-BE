@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
-import { ChatCompletionMessageParam } from 'openai/resources';
 import { CreateMessageDto } from 'src/conversations/dto/create-message.dto';
 
 @Injectable()
-export class OpenAiService {
+export class OpenAIService {
   private openai: OpenAI;
 
   constructor(private readonly configService: ConfigService) {
@@ -18,11 +17,7 @@ export class OpenAiService {
     });
   }
 
-  async test(context: CreateMessageDto[]) {
-    const messages: ChatCompletionMessageParam[] = context.map((msg) => ({
-      role: msg.role as 'system' | 'user' | 'assistant',
-      content: msg.content,
-    }));
+  async test(messages: CreateMessageDto[]) {
     const completion = await this.openai.chat.completions.create({
       messages: [
         {

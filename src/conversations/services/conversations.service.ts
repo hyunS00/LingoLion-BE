@@ -5,7 +5,7 @@ import { Conversation } from '../entities/conversation.entity';
 import { Repository } from 'typeorm';
 import { CreateMessageDto } from '../dto/create-message.dto';
 import { Message, Sender } from '../entities/message.entity';
-import { OpenAiService } from 'src/openAi/openAi.service';
+import { OpenAIService } from 'src/openAI/openAI.service';
 
 @Injectable()
 export class ConversationsService {
@@ -14,7 +14,7 @@ export class ConversationsService {
     private readonly conversationsRepository: Repository<Conversation>,
     @InjectRepository(Message)
     private readonly messagesRepository: Repository<Message>,
-    private readonly openAiService: OpenAiService,
+    private readonly openAiService: OpenAIService,
   ) {}
 
   async createConversation() {
@@ -77,18 +77,17 @@ export class ConversationsService {
     });
 
     const messages = await this.messagesRepository.find({
+      select: ['sender', 'content'],
       where: { conversation: { id } },
       order: { createdAt: 'ASC' },
     });
 
-    const context = messages.map((m) => ({
-      role: m.sender,
-      content: m.content,
-    }));
-
-    console.log(context);
-
-    const res = await this.openAiService.test(context);
+    const res = await this.openAiService.test(
+      messages.map((m) => ({
+        role: m.sender,
+        content: m.content,
+      })),
+    );
 
     await this.messagesRepository.save({
       content: res.content,

@@ -3,7 +3,7 @@ import { Sender } from '../entities/message.entity';
 
 export class CreateMessageDto {
   @IsString()
-  role: string = Sender.user;
+  role = Sender.user;
   @IsString()
   content: string;
 }

@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Conversation } from './conversations/entities/conversation.entity';
 import { Message } from './conversations/entities/message.entity';
-import { OpenAiModule } from './openAi/openai.module';
+import { OpenAIModule } from './openAI/openAI.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { OpenAiModule } from './openAi/openai.module';
       inject: [ConfigService],
     }),
     ConversationsModule,
-    OpenAiModule,
+    OpenAIModule,
   ],
   controllers: [],
   providers: [],
