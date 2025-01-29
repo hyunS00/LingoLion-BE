@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Conversation } from './conversations/entities/conversation.entity';
 import { Message } from './conversations/entities/message.entity';
 import { OpenAIModule } from './openAI/openAI.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { OpenAIModule } from './openAI/openAI.module';
     }),
     ConversationsModule,
     OpenAIModule,
+    RecommendationsModule,
   ],
   controllers: [],
   providers: [],
