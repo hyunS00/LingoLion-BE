@@ -6,6 +6,7 @@ import { Conversation } from './conversations/entities/conversation.entity';
 import { Message } from './conversations/entities/message.entity';
 import { OpenAIModule } from './openAI/openAI.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
+import { Recommendation } from './recommendations/entities/recommendation.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { RecommendationsModule } from './recommendations/recommendations.module'
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [Conversation, Message],
+        entities: [Conversation, Message, Recommendation],
         synchronize: true,
       }),
       inject: [ConfigService],

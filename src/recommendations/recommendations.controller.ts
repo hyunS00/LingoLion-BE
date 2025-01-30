@@ -1,15 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, ValidationPipe, Body, Param } from '@nestjs/common';
 import { RecommendationsService } from './recommendations.service';
-import { CreateRecommendationDto } from './dto/create-recommendation.dto';
-import { UpdateRecommendationDto } from './dto/update-recommendation.dto';
+import { GetRecommendationsDto } from './dto/get-recommendation.dto';
+import { RecommendType } from './entities/recommendation.entity';
 
 @Controller('recommendations')
 export class RecommendationsController {
@@ -17,31 +9,15 @@ export class RecommendationsController {
     private readonly recommendationsService: RecommendationsService,
   ) {}
 
-  @Post()
-  create(@Body() createRecommendationDto: CreateRecommendationDto) {
-    return this.recommendationsService.create(createRecommendationDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.recommendationsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.recommendationsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateRecommendationDto: UpdateRecommendationDto,
+  @Get(':type')
+  async getRecommendationsEndpoint(
+    @Param('type') type: RecommendType,
+    @Body(new ValidationPipe({ transform: true }))
+    getRecommendationsDto: GetRecommendationsDto,
   ) {
-    return this.recommendationsService.update(+id, updateRecommendationDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.recommendationsService.remove(+id);
+    return await this.recommendationsService.getRecommendations(
+      type,
+      getRecommendationsDto,
+    );
   }
 }

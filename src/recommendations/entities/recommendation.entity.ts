@@ -1,22 +1,21 @@
-import { IsEnum, IsString } from 'class-validator';
 import { BaseTable } from 'src/common/entities/base-table.entity';
-import { PrimaryGeneratedColumn } from 'typeorm';
+import { Column, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum RecommendType {
-  'place',
-  'aiRole',
-  'userRole',
-  'situation',
-  'goal',
+  'Place' = 'place',
+  'AiRole' = 'aiRole',
+  'UserRole' = 'userRole',
+  'Situation' = 'situation',
+  'Goal' = 'goal',
 }
 
 export class Recommendation extends BaseTable {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @IsEnum(RecommendType)
+  @Column()
   type: RecommendType;
 
-  @IsString()
+  @Column()
   name: string;
 }
