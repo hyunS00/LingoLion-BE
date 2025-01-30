@@ -1,14 +1,14 @@
 import { BaseTable } from 'src/common/entities/base-table.entity';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum RecommendType {
   'Place' = 'place',
   'AiRole' = 'aiRole',
   'UserRole' = 'userRole',
-  'Situation' = 'situation',
   'Goal' = 'goal',
 }
 
+@Entity()
 export class Recommendation extends BaseTable {
   @PrimaryGeneratedColumn()
   id: number;

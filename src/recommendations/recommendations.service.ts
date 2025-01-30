@@ -1,37 +1,49 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { GetRecommendationsDto } from './dto/get-recommendation.dto';
-import { Repository } from 'typeorm';
 import {
-  Recommendation,
-  RecommendType,
-} from './entities/recommendation.entity';
+  BadRequestException,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import { GetRecommendationsDto } from './dto/get-recommendation.dto';
+import { RecommendType } from './entities/recommendation.entity';
 import { OpenAIService } from 'src/openAI/openAI.service';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ChatCompletionMessage } from 'openai/resources';
 
 @Injectable()
 export class RecommendationsService {
-  constructor(
-    @InjectRepository(Recommendation)
-    private readonly recommendationRepository: Repository<Recommendation>,
-    private readonly openAIService: OpenAIService,
-  ) {}
+  constructor(private readonly openAIService: OpenAIService) {}
+
+  private readonly recommendationMap: Record<
+    RecommendType,
+    (dto: GetRecommendationsDto) => Promise<ChatCompletionMessage>
+  > = {
+    [RecommendType.Place]: () => this.openAIService.recommendPlace(),
+    [RecommendType.AiRole]: (dto) => this.openAIService.recommendAiRole(dto),
+    [RecommendType.UserRole]: (dto) =>
+      this.openAIService.recommendUserRole(dto),
+    [RecommendType.Goal]: (dto) => this.openAIService.recommendGoal(dto),
+  };
+
   async getRecommendations(
     type: RecommendType,
-    getRecommendations: GetRecommendationsDto,
+    getRecommendationDto: GetRecommendationsDto,
   ) {
-    let data: ChatCompletionMessage;
-    if (type === RecommendType.Place) {
-      data = await this.openAIService.recommendPlace();
-    } else if (type === RecommendType.AiRole) {
-      data = await this.openAIService.recommendAiRole(getRecommendations);
-    } else if (type === RecommendType.UserRole) {
-      data = await this.openAIService.recommendUserRole(getRecommendations);
-    } else if (type === RecommendType.Goal) {
-      data = await this.openAIService.recommendGoal(getRecommendations);
-    } else {
+    const recommendFunction = this.recommendationMap[type];
+    if (!recommendFunction) {
       throw new BadRequestException(
-        `해당하는 타입이 없습니다 [${type}] ${getRecommendations}`,
+        `Invalid recommendation type: [${type}]. Valid types are: ${Object.values(RecommendType).join(', ')}. DTO: ${JSON.stringify(getRecommendationDto)}`,
+      );
+    }
+
+    let data: ChatCompletionMessage;
+
+    try {
+      data = await recommendFunction(getRecommendationDto);
+    } catch (err) {
+      if (err instanceof BadRequestException) {
+        throw err;
+      }
+      throw new ServiceUnavailableException(
+        '추천 서비스가 현재 사용할 수 없습니다.',
       );
     }
 
