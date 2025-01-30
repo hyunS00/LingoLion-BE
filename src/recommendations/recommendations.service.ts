@@ -30,7 +30,7 @@ export class RecommendationsService {
     const recommendFunction = this.recommendationMap[type];
     if (!recommendFunction) {
       throw new BadRequestException(
-        `Invalid recommendation type: [${type}]. Valid types are: ${Object.values(RecommendType).join(', ')}. DTO: ${JSON.stringify(getRecommendationDto)}`,
+        `Invalid recommendation type: [${type}]. Valid types are: ${Object.values(RecommendType).join(', ')}`,
       );
     }
 
