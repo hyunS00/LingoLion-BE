@@ -27,14 +27,13 @@ export class OpenAIService {
         messages: [
           {
             role: 'developer',
-            content: `마트에서 과일을 사야되는 상황을 가정하고 회화연습을 도와줘 난이도는 쉽게해줘 틀린부분이 있다면 문장 끝에 알려줘
-              `,
+            content: prompt,
           },
-          ...messages,
+          ...(messages || []),
         ],
         model,
       });
-      return completion;
+      return completion.choices[0].message;
     } catch (e) {
       throw new ServiceUnavailableException(
         '추천 서비스를 일시적으로 사용할 수 없습니다.',
@@ -63,7 +62,7 @@ export class OpenAIService {
             영어회화를 하기위한 장소를 4가지 추천해주세요 장소만 작성해주세요
             예시: 은행,카페,레스토랑,공원
             `;
-    const message = await this.createCompletion(
+    const message = this.createCompletion(
       prompt,
       this.configService.get<string>('OPENAI_API_MODEL'),
     );

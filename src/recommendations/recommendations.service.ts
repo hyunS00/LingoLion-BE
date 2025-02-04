@@ -34,16 +34,7 @@ export class RecommendationsService {
 
     let data: ChatCompletionMessage;
 
-    try {
-      data = await recommendFunction(getRecommendationDto);
-    } catch (err) {
-      if (err instanceof BadRequestException) {
-        throw err;
-      }
-      throw new ServiceUnavailableException(
-        '추천 서비스가 현재 사용할 수 없습니다.',
-      );
-    }
+    data = await recommendFunction(getRecommendationDto);
 
     return { type, data };
   }

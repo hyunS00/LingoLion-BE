@@ -13,8 +13,6 @@ export class RecommendationsController {
     @Query()
     getRecommendationsDto: GetRecommendationsDto,
   ) {
-    console.log(getRecommendationsDto);
-
     return await this.recommendationsService.getRecommendations(
       getRecommendationsDto,
     );
