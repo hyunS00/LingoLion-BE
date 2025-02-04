@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class CreateSituationDto {
+export class SituationDto {
   @IsString()
   place: string;
 

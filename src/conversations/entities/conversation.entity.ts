@@ -21,7 +21,7 @@ export class Conversation extends BaseTable {
   @Column()
   icon: string;
 
-  @OneToOne(() => Situation, {
+  @OneToOne(() => Situation, (situation) => situation.conversation, {
     cascade: true,
     nullable: false,
   })

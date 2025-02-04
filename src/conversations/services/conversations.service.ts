@@ -23,11 +23,9 @@ export class ConversationsService {
 
   async createConversation(createConversationDto: CreateConversationDto) {
     const { situation: situationDto, ...rest } = createConversationDto;
-    console.log(situationDto);
 
     try {
       const situation = await this.situationRepository.save(situationDto);
-      console.log(situation);
 
       const conversation = await this.conversationsRepository.save({
         ...rest,
@@ -104,6 +102,7 @@ export class ConversationsService {
   async createMessage(id: number, createMessageDto: CreateMessageDto) {
     const conversation = await this.conversationsRepository.findOne({
       where: { id },
+      relations: ['situation'],
     });
 
     if (!conversation) {
@@ -122,11 +121,14 @@ export class ConversationsService {
       order: { createdAt: 'ASC' },
     });
 
-    const res = await this.openAIService.test(
+    const { place, aiRole, userRole, goal } = conversation.situation;
+
+    const res = await this.openAIService.simulateConversationPractice(
       messages.map((m) => ({
         role: m.sender,
         content: m.content,
       })),
+      { place, aiRole, userRole, goal },
     );
 
     await this.messagesRepository.save({
@@ -135,7 +137,7 @@ export class ConversationsService {
       sender: Sender.assistant,
     });
 
-    return { data: res, comment: 'adshfdask' };
+    return { data: res };
   }
 
   async findMessagesByConversationId(id: number) {

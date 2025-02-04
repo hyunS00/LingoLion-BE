@@ -1,4 +1,13 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Conversation } from './conversation.entity';
 
 @Entity()
 export class Situation {
@@ -16,4 +25,7 @@ export class Situation {
 
   @Column()
   goal: string;
+
+  @OneToOne(() => Conversation, (conversation) => conversation.situation)
+  conversation: Conversation;
 }
