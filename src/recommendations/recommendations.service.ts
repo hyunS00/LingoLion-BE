@@ -23,10 +23,8 @@ export class RecommendationsService {
     [RecommendType.Goal]: (dto) => this.openAIService.recommendGoal(dto),
   };
 
-  async getRecommendations(
-    type: RecommendType,
-    getRecommendationDto: GetRecommendationsDto,
-  ) {
+  async getRecommendations(getRecommendationDto: GetRecommendationsDto) {
+    const { type } = getRecommendationDto;
     const recommendFunction = this.recommendationMap[type];
     if (!recommendFunction) {
       throw new BadRequestException(
