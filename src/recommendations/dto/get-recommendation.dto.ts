@@ -1,19 +1,18 @@
 import { IsOptional, IsString } from 'class-validator';
 
 export class GetRecommendationsDto {
-  @IsOptional()
   @IsString()
-  place?: string;
+  place: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   aiRole?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   userRole?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   goal?: string;
 }
