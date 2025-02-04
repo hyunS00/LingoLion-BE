@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { CreateMessageDto } from '../dto/create-message.dto';
 import { Message, Sender } from '../entities/message.entity';
 import { OpenAIService } from 'src/openAI/openAI.service';
+import { CreateConversationDto } from '../dto/create-conversation.dto';
+import { Situation } from '../entities/situation.entity';
 
 @Injectable()
 export class ConversationsService {
@@ -14,39 +16,75 @@ export class ConversationsService {
     private readonly conversationsRepository: Repository<Conversation>,
     @InjectRepository(Message)
     private readonly messagesRepository: Repository<Message>,
-    private readonly openAiService: OpenAIService,
+    @InjectRepository(Situation)
+    private readonly situationRepository: Repository<Situation>,
+    private readonly openAIService: OpenAIService,
   ) {}
 
-  async createConversation() {
-    return await this.conversationsRepository.save({});
+  async createConversation(createConversationDto: CreateConversationDto) {
+    const { situation: situationDto, ...rest } = createConversationDto;
+
+    try {
+      const situation = await this.situationRepository.save(situationDto);
+
+      const conversation = await this.conversationsRepository.save({
+        ...rest,
+        situation,
+      });
+
+      return conversation;
+    } catch (e) {
+      throw e;
+    }
   }
 
   async findAll() {
-    return await this.conversationsRepository.find();
+    return await this.conversationsRepository.find({
+      relations: ['situation'],
+    });
   }
 
   async findOne(id: number) {
-    return await this.conversationsRepository.findOne({ where: { id } });
+    return await this.conversationsRepository.findOne({
+      where: { id },
+      relations: ['situation', 'messages'],
+    });
   }
 
-  async update(id: number, updateChatDto: UpdateConversationDto) {
-    const chat = await this.conversationsRepository.findOne({ where: { id } });
+  async update(id: number, updateConversationDto: UpdateConversationDto) {
+    const conversation = await this.conversationsRepository.findOne({
+      where: { id },
+      relations: ['situation'],
+    });
 
-    if (!chat) {
+    if (!conversation) {
       throw new NotFoundException();
+    }
+
+    const { situation, ...rest } = updateConversationDto;
+
+    if (situation) {
+      await this.situationRepository.update(conversation.situation, situation);
+    }
+
+    if (!rest) {
+      return conversation;
     }
 
     await this.conversationsRepository.update(
       { id },
       {
-        ...updateChatDto,
+        ...conversation,
+        ...rest,
       },
     );
 
-    const updatedChat = await this.conversationsRepository.findOne({
+    const updatedConversation = await this.conversationsRepository.findOne({
       where: { id },
+      relations: ['situation'],
     });
-    return updatedChat;
+
+    return updatedConversation;
   }
 
   async remove(id: number) {
@@ -64,6 +102,7 @@ export class ConversationsService {
   async createMessage(id: number, createMessageDto: CreateMessageDto) {
     const conversation = await this.conversationsRepository.findOne({
       where: { id },
+      relations: ['situation'],
     });
 
     if (!conversation) {
@@ -82,11 +121,14 @@ export class ConversationsService {
       order: { createdAt: 'ASC' },
     });
 
-    const res = await this.openAiService.test(
+    const { place, aiRole, userRole, goal } = conversation.situation;
+
+    const res = await this.openAIService.simulateConversationPractice(
       messages.map((m) => ({
         role: m.sender,
         content: m.content,
       })),
+      { place, aiRole, userRole, goal },
     );
 
     await this.messagesRepository.save({
@@ -95,7 +137,7 @@ export class ConversationsService {
       sender: Sender.assistant,
     });
 
-    return { data: res, comment: 'adshfdask' };
+    return { data: res };
   }
 
   async findMessagesByConversationId(id: number) {
