@@ -47,22 +47,19 @@ export class OpenAIService {
     situationDto: SituationDto,
   ) {
     const { place, aiRole, userRole, goal } = situationDto;
-    const completion = await this.openai.chat.completions.create({
-      messages: [
-        {
-          role: 'developer',
-          content: `${place}에서 AI와 함께 영어회화를 진행합니다.
+    const prompt = `${place}에서 AI와 함께 영어회화를 진행합니다.
           당신의 역할은 ${aiRole}입니다.
           제가 맡을 역할은 ${userRole}입니다.
-          대화의 목표는 ${global}입니다.
-          문맥에 맞게 회화를 진행해주세요`,
-        },
-        ...messages,
-      ],
-      model: 'gpt-4o-mini',
-    });
+          대화의 목표는 ${goal}입니다.
+          문맥에 맞게 회화를 진행해주세요`;
 
-    return completion.choices[0].message;
+    const message = await this.createChatCompletion(
+      prompt,
+      this.configService.get<string>('OPENAI_API_MODEL'),
+      messages,
+    );
+
+    return message;
   }
 
   async recommendPlace() {
@@ -70,7 +67,7 @@ export class OpenAIService {
             영어회화를 하기위한 장소를 4가지 추천해주세요 장소만 작성해주세요
             예시: 은행,카페,레스토랑,공원
             `;
-    const message = this.createChatCompletion(
+    const message = await this.createChatCompletion(
       prompt,
       this.configService.get<string>('OPENAI_API_MODEL'),
     );
@@ -85,7 +82,7 @@ export class OpenAIService {
             ***반드시 역할만 답변해주세요***
             답변 예시: 은행원,경비원,관광객,종업원
             `;
-    const message = this.createChatCompletion(
+    const message = await this.createChatCompletion(
       prompt,
       this.configService.get<string>('OPENAI_API_MODEL'),
     );
@@ -98,7 +95,7 @@ export class OpenAIService {
             ${place}에서 AI와 함께 영어회화를 진행합니다. AI의 역할은 ${aiRole}입니다. 제가 맡을 역할 4가지를 추천해주세요
             출력 예시: 은행원,경비원,관광객,종업원
             `;
-    const message = this.createChatCompletion(
+    const message = await this.createChatCompletion(
       prompt,
       this.configService.get<string>('OPENAI_API_MODEL'),
     );
@@ -113,7 +110,7 @@ export class OpenAIService {
   
             출력 예시: 주문을 한다, 여권을 잃어버림, 길을 묻는다, 물어본다
             `;
-    const message = this.createChatCompletion(
+    const message = await this.createChatCompletion(
       prompt,
       this.configService.get<string>('OPENAI_API_MODEL'),
     );
