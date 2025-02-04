@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { CreateMessageDto } from '../dto/create-message.dto';
 import { Message, Sender } from '../entities/message.entity';
 import { OpenAIService } from 'src/openAI/openAI.service';
+import { CreateConversationDto } from '../dto/create-conversation.dto';
+import { Situation } from '../entities/situation.entity';
 
 @Injectable()
 export class ConversationsService {
@@ -14,11 +16,28 @@ export class ConversationsService {
     private readonly conversationsRepository: Repository<Conversation>,
     @InjectRepository(Message)
     private readonly messagesRepository: Repository<Message>,
-    private readonly openAiService: OpenAIService,
+    @InjectRepository(Situation)
+    private readonly situationRepository: Repository<Situation>,
+    private readonly openAIService: OpenAIService,
   ) {}
 
-  async createConversation() {
-    return await this.conversationsRepository.save({});
+  async createConversation(createConversationDto: CreateConversationDto) {
+    const { situation: situationDto, ...rest } = createConversationDto;
+    console.log(situationDto);
+
+    try {
+      const situation = await this.situationRepository.save(situationDto);
+      console.log(situation);
+
+      const conversation = await this.conversationsRepository.save({
+        ...rest,
+        situation,
+      });
+
+      return conversation;
+    } catch (e) {
+      throw e;
+    }
   }
 
   async findAll() {
@@ -36,12 +55,12 @@ export class ConversationsService {
       throw new NotFoundException();
     }
 
-    await this.conversationsRepository.update(
-      { id },
-      {
-        ...updateChatDto,
-      },
-    );
+    // await this.conversationsRepository.update(
+    //   { id },
+    //   {
+    //     ...updateChatDto,
+    //   },
+    // );
 
     const updatedChat = await this.conversationsRepository.findOne({
       where: { id },
@@ -82,7 +101,7 @@ export class ConversationsService {
       order: { createdAt: 'ASC' },
     });
 
-    const res = await this.openAiService.test(
+    const res = await this.openAIService.test(
       messages.map((m) => ({
         role: m.sender,
         content: m.content,

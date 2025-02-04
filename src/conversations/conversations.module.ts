@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Conversation } from './entities/conversation.entity';
 import { Message } from './entities/message.entity';
 import { OpenAIService } from 'src/openAI/openAI.service';
+import { Situation } from './entities/situation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Conversation, Message])],
+  imports: [TypeOrmModule.forFeature([Conversation, Message, Situation])],
   controllers: [ConversationsController],
   providers: [ConversationsService, OpenAIService],
 })
