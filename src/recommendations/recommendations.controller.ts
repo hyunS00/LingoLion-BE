@@ -1,4 +1,4 @@
-import { Controller, Get, Body } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { RecommendationsService } from './recommendations.service';
 import { GetRecommendationsDto } from './dto/get-recommendation.dto';
 
@@ -10,9 +10,11 @@ export class RecommendationsController {
 
   @Get()
   async getRecommendationsEndpoint(
-    @Body()
+    @Query()
     getRecommendationsDto: GetRecommendationsDto,
   ) {
+    console.log(getRecommendationsDto);
+
     return await this.recommendationsService.getRecommendations(
       getRecommendationsDto,
     );
