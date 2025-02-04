@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Conversation } from './conversations/entities/conversation.entity';
 import { Message } from './conversations/entities/message.entity';
 import { OpenAIModule } from './openAI/openAI.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
 
 @Module({
   imports: [
@@ -18,12 +19,13 @@ import { OpenAIModule } from './openAI/openAI.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [Conversation, Message],
-        synchronize: true,
+        synchronize: configService.get<string>('NODE_ENV') !== 'production',
       }),
       inject: [ConfigService],
     }),
     ConversationsModule,
     OpenAIModule,
+    RecommendationsModule,
   ],
   controllers: [],
   providers: [],

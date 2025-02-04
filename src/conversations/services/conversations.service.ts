@@ -95,7 +95,7 @@ export class ConversationsService {
       sender: Sender.assistant,
     });
 
-    return res;
+    return { data: res, comment: 'adshfdask' };
   }
 
   async findMessagesByConversationId(id: number) {
