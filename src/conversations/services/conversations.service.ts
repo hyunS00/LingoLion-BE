@@ -41,31 +41,52 @@ export class ConversationsService {
   }
 
   async findAll() {
-    return await this.conversationsRepository.find();
+    return await this.conversationsRepository.find({
+      relations: ['situation'],
+    });
   }
 
   async findOne(id: number) {
-    return await this.conversationsRepository.findOne({ where: { id } });
+    return await this.conversationsRepository.findOne({
+      where: { id },
+      relations: ['situation', 'messages'],
+    });
   }
 
-  async update(id: number, updateChatDto: UpdateConversationDto) {
-    const chat = await this.conversationsRepository.findOne({ where: { id } });
+  async update(id: number, updateConversationDto: UpdateConversationDto) {
+    const conversation = await this.conversationsRepository.findOne({
+      where: { id },
+      relations: ['situation'],
+    });
 
-    if (!chat) {
+    if (!conversation) {
       throw new NotFoundException();
     }
 
-    // await this.conversationsRepository.update(
-    //   { id },
-    //   {
-    //     ...updateChatDto,
-    //   },
-    // );
+    const { situation, ...rest } = updateConversationDto;
 
-    const updatedChat = await this.conversationsRepository.findOne({
+    if (situation) {
+      await this.situationRepository.update(conversation.situation, situation);
+    }
+
+    if (!rest) {
+      return conversation;
+    }
+
+    await this.conversationsRepository.update(
+      { id },
+      {
+        ...conversation,
+        ...rest,
+      },
+    );
+
+    const updatedConversation = await this.conversationsRepository.findOne({
       where: { id },
+      relations: ['situation'],
     });
-    return updatedChat;
+
+    return updatedConversation;
   }
 
   async remove(id: number) {

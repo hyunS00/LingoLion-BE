@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { ConversationsService } from '../services/conversations.service';
 import { UpdateConversationDto } from '../dto/update-conversation.dto';
@@ -13,6 +15,7 @@ import { CreateMessageDto } from '../dto/create-message.dto';
 import { CreateConversationDto } from '../dto/create-conversation.dto';
 
 @Controller('conversations')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ConversationsController {
   constructor(private readonly conversationsService: ConversationsService) {}
 

@@ -1,4 +1,5 @@
 import {
+  Column,
   Entity,
   JoinColumn,
   OneToMany,
@@ -14,7 +15,14 @@ export class Conversation extends BaseTable {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  title: string;
+
+  @Column()
+  icon: string;
+
   @OneToOne(() => Situation, {
+    cascade: true,
     nullable: false,
   })
   @JoinColumn()
