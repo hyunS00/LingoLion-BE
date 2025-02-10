@@ -19,16 +19,16 @@ export class UsersService {
   ) {}
 
   async hashPassword(password: string) {
-    const SALT_ROUNDS = this.configService.get<string>('SALT_ROUNDS');
+    const SALT_ROUNDS = parseInt(this.configService.get<string>('SALT_ROUNDS'));
 
-    return await bcrypt.hash(password, parseInt(SALT_ROUNDS));
+    return await bcrypt.hash(password, SALT_ROUNDS);
   }
   async create(createUserDto: CreateUserDto) {
     const { email, password, name } = createUserDto;
-    const existUser = await this.userRepository.findOne({
+    const exUser = await this.userRepository.findOne({
       where: { email },
     });
-    if (existUser) {
+    if (exUser) {
       throw new ConflictException();
     }
     const hashedPassword = await this.hashPassword(password);
@@ -48,6 +48,13 @@ export class UsersService {
 
   async findOne(id: string) {
     return await this.userRepository.findOne({ where: { id } });
+  }
+
+  async findByEmail(email: string) {
+    return await this.userRepository.findOne({
+      where: { email },
+      select: ['createdAt', 'email', 'id', 'name', 'password'],
+    });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
