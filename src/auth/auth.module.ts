@@ -8,7 +8,10 @@ import { JwtAccessStrategy } from './strategy/jwtAccess.strategy';
 import { JwtRefreshStrategy } from './strategy/jwtRefresh.strategy';
 
 @Module({
-  imports: [JwtModule.register({}), UsersModule],
+  imports: [
+    JwtModule.register({ signOptions: { issuer: 'lingo-lion' } }),
+    UsersModule,
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,
