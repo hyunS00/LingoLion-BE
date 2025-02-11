@@ -62,8 +62,17 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException();
     }
+    let hashedPassword: string;
+    const { password, ...restField } = updateUserDto;
 
-    await this.userRepository.update(id, updateUserDto);
+    if (updateUserDto.password) {
+      hashedPassword = await this.hashPassword(password);
+    }
+
+    await this.userRepository.update(id, {
+      ...restField,
+      ...(hashedPassword && { password: hashedPassword }),
+    });
 
     const updatedUser = this.userRepository.findOne({ where: { id } });
     return updatedUser;
