@@ -26,14 +26,14 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  signin(@Request() req: any) {
+  signin(@Request() req: { user: UserDto }) {
     return this.authService.generateTokens(req.user);
   }
 
   @Public()
   @UseGuards(JwtRefreshAuthGuard)
   @Post('refresh')
-  refreshToken(@Request() req) {
+  refreshToken(@Request() req: { user: UserDto }) {
     return this.authService.refreshAccessToken(req.user);
   }
 }
