@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConversationsModule } from './conversations/conversations.module';
 import { Conversation } from './conversations/entities/conversation.entity';
 import { Message } from './conversations/entities/message.entity';
@@ -10,6 +15,9 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthHeaderValidationMiddleware } from './auth/middleware/authHeader-validation.middleware';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAccessAuthGuard } from './auth/gaurd/jwtAccessAuth.guard';
 
 @Module({
   imports: [
@@ -34,6 +42,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAccessAuthGuard,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthHeaderValidationMiddleware)
+      .exclude({ path: 'auth/login', method: RequestMethod.POST })
+      .exclude({ path: 'auth/join', method: RequestMethod.POST })
+      .forRoutes('*');
+  }
+}

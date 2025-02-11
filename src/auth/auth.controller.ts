@@ -1,29 +1,39 @@
 import {
   Body,
   Controller,
-  Header,
-  Headers,
   Post,
+  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { LocalAuthGaurd } from './strategy/local.strategy';
 import { UserDto } from './dto/user.dto';
+import { LocalAuthGuard } from './gaurd/localAuth.guard';
+import { Public } from './decorator/public.decorator';
+import { JwtRefreshAuthGuard } from './gaurd/jwtRefreshAuth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('join')
   async join(@Body() createUserDto: CreateUserDto) {
     return await this.authService.join(createUserDto);
   }
 
+  @Public()
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  @UseGuards(LocalAuthGaurd)
-  signin(@Request() user: UserDto) {
-    return this.authService.generateTokens(user);
+  signin(@Request() req: any) {
+    return this.authService.generateTokens(req.user);
+  }
+
+  @Public()
+  @UseGuards(JwtRefreshAuthGuard)
+  @Post('refresh')
+  refreshToken(@Request() req) {
+    return this.authService.refreshAccessToken(req.user);
   }
 }

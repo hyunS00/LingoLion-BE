@@ -26,16 +26,15 @@ export class AuthService {
   generateAccessToken(user: User | UserDto) {
     const payload = { sub: user.id, username: user.name };
     const secret = this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET');
-    const expiresIn =
-      this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') || '15m';
+    const expiresIn = this.configService.get<string>('JWT_ACCESS_EXPIRES_IN');
     return this.createJwtToken(payload, secret, expiresIn);
   }
 
   generateRefreshToken(user: User | UserDto) {
     const payload = { sub: user.id, username: user.name };
+
     const secret = this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET');
-    const expiresIn =
-      this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') || '';
+    const expiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRES_IN');
     return this.createJwtToken(payload, secret, expiresIn);
   }
 
@@ -43,6 +42,11 @@ export class AuthService {
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
     return { accessToken, refreshToken };
+  }
+
+  refreshAccessToken(user: User | UserDto) {
+    const accessToken = this.generateAccessToken(user);
+    return { accessToken };
   }
 
   async join(createUserDto: CreateUserDto) {
@@ -56,12 +60,10 @@ export class AuthService {
 
   async authenticate(email: string, password: string) {
     const exUser = await this.userService.findByEmail(email);
-    console.log(exUser);
 
     if (!exUser) {
       throw new BadRequestException('계정 혹은 비밀번호가 일치하지 않습니다.');
     }
-    console.log(exUser);
 
     const result = await bcrypt.compare(password, exUser.password);
     if (!result) {
