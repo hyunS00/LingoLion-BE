@@ -18,6 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthHeaderValidationMiddleware } from './auth/middleware/authHeader-validation.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAccessAuthGuard } from './auth/gaurd/jwtAccessAuth.guard';
+import { RBACGuard } from './auth/gaurd/RBAC.guard';
 
 @Module({
   imports: [
@@ -46,6 +47,10 @@ import { JwtAccessAuthGuard } from './auth/gaurd/jwtAccessAuth.guard';
     {
       provide: APP_GUARD,
       useClass: JwtAccessAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RBACGuard,
     },
   ],
 })

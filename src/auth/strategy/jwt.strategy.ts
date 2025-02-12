@@ -20,21 +20,18 @@ export function createBaseJwtStrategy(strategyName: string) {
 
     async validate(payload: any): Promise<UserDto> {
       const payloadDto = plainToInstance(JwtPayloadDto, payload);
-      console.log(payload);
-      console.log(payloadDto);
 
       try {
         await validateOrReject(payloadDto);
       } catch (error) {
-        console.log(error);
-
         throw new UnauthorizedException('유효하지 않은 토큰입니다.');
       }
-      console.log('createBaseJwtStratey', payloadDto);
+
       const userDto: UserDto = {
         id: payloadDto.sub,
         name: payloadDto.name,
         email: payloadDto.email,
+        role: payloadDto.role,
       };
 
       return userDto;

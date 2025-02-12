@@ -3,11 +3,13 @@ import {
   IsDateString,
   IsDefined,
   IsEmail,
+  IsEnum,
   IsNumber,
   IsString,
   IsVariableWidth,
   Matches,
 } from 'class-validator';
+import { Role } from 'src/users/entities/user.entity';
 
 export class JwtPayloadDto {
   @IsDefined()
@@ -33,4 +35,7 @@ export class JwtPayloadDto {
   @IsDefined()
   @Matches('lingo-lion')
   iss: number;
+
+  @IsEnum(Role)
+  role: Role;
 }

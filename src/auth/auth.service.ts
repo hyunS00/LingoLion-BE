@@ -20,7 +20,12 @@ export class AuthService {
     secretKey: string,
     expiresInKey: string,
   ) {
-    const payload = { sub: user.id, name: user.name, email: user.email };
+    const payload = {
+      sub: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
     const secret = this.configService.get<string>(secretKey);
     const expiresIn = this.configService.get<string>(expiresInKey);
     return this.jwtService.sign(payload, { secret, expiresIn });

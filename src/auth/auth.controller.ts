@@ -21,8 +21,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   signin(@Request() req: { user: User }) {
-    console.log('login', req.user);
-
     return this.authService.generateTokens(req.user);
   }
 
@@ -30,8 +28,6 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Post('refresh')
   refreshToken(@Request() req: { user: UserDto }) {
-    console.log('refresh', req.user);
-
     return this.authService.refreshAccessToken(req.user);
   }
 }
