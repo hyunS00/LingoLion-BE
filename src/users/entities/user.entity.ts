@@ -11,7 +11,9 @@ export class User extends BaseTable {
   email: string;
 
   @Column({ select: false })
-  @Exclude()
+  @Exclude({
+    toPlainOnly: true,
+  })
   password: string;
 
   @Column()
