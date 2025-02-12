@@ -5,6 +5,7 @@ import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 import { JwtPayloadDto } from '../dto/jwtPayload.dto';
 import { ConfigService } from '@nestjs/config';
+import { UserDto } from '../dto/user.dto';
 
 export function createBaseJwtStrategy(strategyName: string) {
   @Injectable()
@@ -17,14 +18,26 @@ export function createBaseJwtStrategy(strategyName: string) {
       });
     }
 
-    async validate(payload: any): Promise<JwtPayloadDto> {
+    async validate(payload: any): Promise<UserDto> {
       const payloadDto = plainToInstance(JwtPayloadDto, payload);
+      console.log(payload);
+      console.log(payloadDto);
+
       try {
         await validateOrReject(payloadDto);
       } catch (error) {
+        console.log(error);
+
         throw new UnauthorizedException('유효하지 않은 토큰입니다.');
       }
-      return payloadDto;
+      console.log('createBaseJwtStratey', payloadDto);
+      const userDto: UserDto = {
+        id: payloadDto.sub,
+        name: payloadDto.name,
+        email: payloadDto.email,
+      };
+
+      return userDto;
     }
   }
   return BaseJwtStrategy;

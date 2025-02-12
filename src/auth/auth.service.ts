@@ -16,26 +16,30 @@ export class AuthService {
   ) {}
 
   createJwtToken(
-    payload: { sub: string; username: string },
-    secret: string,
-    expiresIn: string,
+    user: User | UserDto,
+    secretKey: string,
+    expiresInKey: string,
   ) {
+    const payload = { sub: user.id, name: user.name, email: user.email };
+    const secret = this.configService.get<string>(secretKey);
+    const expiresIn = this.configService.get<string>(expiresInKey);
     return this.jwtService.sign(payload, { secret, expiresIn });
   }
 
   generateAccessToken(user: User | UserDto) {
-    const payload = { sub: user.id, username: user.name };
-    const secret = this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET');
-    const expiresIn = this.configService.get<string>('JWT_ACCESS_EXPIRES_IN');
-    return this.createJwtToken(payload, secret, expiresIn);
+    return this.createJwtToken(
+      user,
+      'JWT_ACCESS_TOKEN_SECRET',
+      'JWT_ACCESS_EXPIRES_IN',
+    );
   }
 
   generateRefreshToken(user: User | UserDto) {
-    const payload = { sub: user.id, username: user.name };
-
-    const secret = this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET');
-    const expiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRES_IN');
-    return this.createJwtToken(payload, secret, expiresIn);
+    return this.createJwtToken(
+      user,
+      'JWT_REFRESH_TOKEN_SECRET',
+      'JWT_REFRESH_EXPIRES_IN',
+    );
   }
 
   generateTokens(user: User | UserDto) {
@@ -50,12 +54,15 @@ export class AuthService {
   }
 
   async join(createUserDto: CreateUserDto) {
-    const newUser = await this.userService.create(createUserDto);
-
-    return {
-      accessToken: this.generateAccessToken(newUser),
-      refreshToken: this.generateRefreshToken(newUser),
-    };
+    try {
+      const newUser = await this.userService.create(createUserDto);
+      return {
+        accessToken: this.generateAccessToken(newUser),
+        refreshToken: this.generateRefreshToken(newUser),
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async authenticate(email: string, password: string) {

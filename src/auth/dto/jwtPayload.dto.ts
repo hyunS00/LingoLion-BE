@@ -5,6 +5,8 @@ import {
   IsEmail,
   IsNumber,
   IsString,
+  IsVariableWidth,
+  Matches,
 } from 'class-validator';
 
 export class JwtPayloadDto {
@@ -12,9 +14,13 @@ export class JwtPayloadDto {
   @IsString()
   sub: string;
 
-  // @IsDefined()
-  // @IsEmail()
-  // email: string;
+  @IsDefined()
+  @IsEmail()
+  email: string;
+
+  @IsDefined()
+  @IsString()
+  name: string;
 
   @IsDefined()
   @IsNumber()
@@ -23,4 +29,8 @@ export class JwtPayloadDto {
   @IsDefined()
   @IsNumber()
   exp: number;
+
+  @IsDefined()
+  @Matches('lingo-lion')
+  iss: number;
 }
