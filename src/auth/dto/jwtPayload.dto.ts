@@ -1,12 +1,9 @@
 import {
-  IsDate,
-  IsDateString,
   IsDefined,
   IsEmail,
   IsEnum,
   IsNumber,
   IsString,
-  IsVariableWidth,
   Matches,
 } from 'class-validator';
 import { Role } from 'src/users/entities/user.entity';
