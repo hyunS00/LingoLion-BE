@@ -34,7 +34,7 @@ export class JwtPayloadDto {
 
   @IsDefined()
   @Matches('lingo-lion')
-  iss: number;
+  iss: string;
 
   @IsEnum(Role)
   role: Role;
