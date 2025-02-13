@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { CreateMessageDto } from 'src/conversations/dto/create-message.dto';
 import { SituationDto } from 'src/conversations/dto/situation.dto';
-import { GetRecommendationsDto } from 'src/recommendations/dto/get-recommendation.dto';
+import { SituationRecommendDto } from 'src/situations/dto/situation-recommend.dto';
 
 @Injectable()
 export class OpenAIService {
@@ -75,7 +75,7 @@ export class OpenAIService {
     return message;
   }
 
-  async recommendAiRole(getRecommendations: GetRecommendationsDto) {
+  async recommendAiRole(getRecommendations: SituationRecommendDto) {
     const { place } = getRecommendations;
     const prompt = `
             ${place}에서 영어회화를 하기위해 AI에게 부여할 역할 4가지를 추천해주세요
@@ -89,7 +89,7 @@ export class OpenAIService {
     return message;
   }
 
-  async recommendUserRole(getRecommendations: GetRecommendationsDto) {
+  async recommendUserRole(getRecommendations: SituationRecommendDto) {
     const { place, aiRole } = getRecommendations;
     const prompt = `
             ${place}에서 AI와 함께 영어회화를 진행합니다. AI의 역할은 ${aiRole}입니다. 제가 맡을 역할 4가지를 추천해주세요
@@ -102,7 +102,7 @@ export class OpenAIService {
     return message;
   }
 
-  async recommendGoal(getRecommendations: GetRecommendationsDto) {
+  async recommendGoal(getRecommendations: SituationRecommendDto) {
     const { place, aiRole, userRole } = getRecommendations;
     const prompt = `
             ${place}에서 AI와 함께 영어회화를 진행합니다. AI의 역할은 ${aiRole}입니다. 제가 맡을 역할은 ${userRole}입니다.

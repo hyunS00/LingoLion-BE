@@ -1,7 +1,7 @@
 import { BaseTable } from 'src/common/entities/base-table.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum RecommendType {
+export enum SituationType {
   'Place' = 'place',
   'AiRole' = 'aiRole',
   'UserRole' = 'userRole',
@@ -9,12 +9,12 @@ export enum RecommendType {
 }
 
 @Entity()
-export class Recommendation extends BaseTable {
+export class Situation extends BaseTable {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  type: RecommendType;
+  type: SituationType;
 
   @Column()
   name: string;

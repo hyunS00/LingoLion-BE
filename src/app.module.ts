@@ -8,7 +8,7 @@ import { ConversationsModule } from './conversations/conversations.module';
 import { Conversation } from './conversations/entities/conversation.entity';
 import { Message } from './conversations/entities/message.entity';
 import { OpenAIModule } from './openAI/openAI.module';
-import { RecommendationsModule } from './recommendations/recommendations.module';
+import { RecommendationsModule } from './situations/recommendations.module';
 import { Situation } from './conversations/entities/situation.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
