@@ -4,14 +4,14 @@ import { SituationRecommendDto } from './dto/situation-recommend.dto';
 
 @Controller('situations')
 export class SituationsController {
-  constructor(private readonly recommendationsService: SituationsService) {}
+  constructor(private readonly situationsService: SituationsService) {}
 
   @Get('recommend')
   async getRecommendationsEndpoint(
     @Query()
     situationRecommendDto: SituationRecommendDto,
   ) {
-    return await this.recommendationsService.getSituationsRecommed(
+    return await this.situationsService.getSituationsRecommed(
       situationRecommendDto,
     );
   }

@@ -10,4 +10,4 @@ import { OpenAIService } from 'src/openAI/openAI.service';
   controllers: [SituationsController],
   providers: [SituationsService, OpenAIService],
 })
-export class RecommendationsModule {}
+export class SituationsModule {}
