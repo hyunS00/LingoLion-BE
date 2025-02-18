@@ -36,6 +36,7 @@
     "emoji-regex": "^10.4.0",
     "openai": "^4.79.1",
     "passport": "^0.7.0",
+    "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.13.1",

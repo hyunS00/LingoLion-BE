@@ -1,11 +1,12 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
 import { LocalAuthGuard } from './gaurd/localAuth.guard';
 import { Public } from './decorator/public.decorator';
 import { JwtRefreshAuthGuard } from './gaurd/jwtRefreshAuth.guard';
-import { User } from 'src/users/entities/user.entity';
+import { Request, Response } from 'express';
+import { BasicAuthGuard } from './gaurd/basicAuth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -18,16 +19,29 @@ export class AuthController {
   }
 
   @Public()
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Post('login')
-  signin(@Request() req: { user: User }) {
-    return this.authService.generateTokens(req.user);
+  signin(
+    @Req() req: Request & { user: UserDto },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken, refreshToken } = this.authService.generateTokens(
+      req.user,
+    );
+
+    res.cookie('refresh', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+
+    return { accessToken };
   }
 
-  @Public()
-  @UseGuards(JwtRefreshAuthGuard)
-  @Post('refresh')
-  refreshToken(@Request() req: { user: UserDto }) {
-    return this.authService.refreshAccessToken(req.user);
-  }
+  // @Public()
+  // @UseGuards(JwtRefreshAuthGuard)
+  // @Post('refresh')
+  // refreshToken(@Request() req: { user: UserDto }) {
+  //   return this.authService.refreshAccessToken(req.user);
+  // }
 }

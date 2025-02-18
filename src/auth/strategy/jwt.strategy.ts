@@ -19,6 +19,8 @@ export function createBaseJwtStrategy(strategyName: string) {
     }
 
     async validate(payload: Record<string, unknown>): Promise<UserDto> {
+      console.log(payload);
+
       const payloadDto = plainToInstance(JwtPayloadDto, payload);
 
       try {
