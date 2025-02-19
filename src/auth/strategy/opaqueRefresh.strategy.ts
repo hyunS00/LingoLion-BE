@@ -11,8 +11,11 @@ export class OpaqueRefreshStrategy extends PassportStrategy(
   constructor(private readonly authService: AuthService) {
     super();
   }
-  async validate(req: Request & { cookies?: Record<string, string> }) {
+  async validate(req: Request & { cookies: Record<string, string> }) {
     const refreshToken = req.cookies['refresh'];
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
     const splitToken = refreshToken.split('.');
     if (splitToken.length !== 2) {
       throw new UnauthorizedException();
