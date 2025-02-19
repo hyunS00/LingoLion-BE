@@ -6,10 +6,14 @@ import { Public } from './decorator/public.decorator';
 import { Request, Response } from 'express';
 import { BasicAuthGuard } from './gaurd/basicAuth.guard';
 import { OpaqueRefreshAuthGuard } from './gaurd/opaqueRefreshAuth.guard';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Public()
   @Post('join')
@@ -43,7 +47,7 @@ export class AuthController {
 
     res.cookie('refresh', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.configService.get<string>('NODE_ENV') === 'prod',
       sameSite: 'strict',
     });
 
