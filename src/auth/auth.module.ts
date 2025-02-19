@@ -3,13 +3,17 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from './strategy/local.strategy';
-import { JwtAccessStrategy, JwtRefreshStrategy } from './strategy/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { HttpBasicStrategy } from './strategy/basic.strategy';
+import { JwtAccessStrategy } from './strategy/jwtAccess.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RefreshToken } from './entities/refresh.entity';
+import { User } from 'src/users/entities/user.entity';
+import { OpaqueRefreshStrategy } from './strategy/opaqueRefresh.strategy';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([RefreshToken, User]),
     JwtModule.register({ signOptions: { issuer: 'lingo-lion' } }),
     UsersModule,
     PassportModule,
@@ -17,9 +21,8 @@ import { HttpBasicStrategy } from './strategy/basic.strategy';
   controllers: [AuthController],
   providers: [
     AuthService,
-    LocalStrategy,
     JwtAccessStrategy,
-    JwtRefreshStrategy,
+    OpaqueRefreshStrategy,
     HttpBasicStrategy,
   ],
 })

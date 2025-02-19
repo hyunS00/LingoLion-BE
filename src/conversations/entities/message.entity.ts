@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Conversation } from './conversation.entity';
-import { BaseTable } from 'src/common/entities/base-table.entity';
+import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
 
 export enum Sender {
   system = 'system',
@@ -8,7 +8,7 @@ export enum Sender {
   user = 'user',
 }
 @Entity()
-export class Message extends BaseTable {
+export class Message extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

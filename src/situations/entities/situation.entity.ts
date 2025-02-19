@@ -1,4 +1,4 @@
-import { BaseTable } from 'src/common/entities/base-table.entity';
+import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum SituationType {
@@ -9,7 +9,7 @@ export enum SituationType {
 }
 
 @Entity()
-export class Situation extends BaseTable {
+export class Situation extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

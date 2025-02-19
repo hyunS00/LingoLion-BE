@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Message } from './message.entity';
-import { BaseTable } from 'src/common/entities/base-table.entity';
+import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
 import { Situation } from './situation.entity';
 
 @Entity()
-export class Conversation extends BaseTable {
+export class Conversation extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

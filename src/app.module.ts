@@ -19,6 +19,7 @@ import { AuthHeaderValidationMiddleware } from './auth/middleware/authHeader-val
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAccessAuthGuard } from './auth/gaurd/jwtAccessAuth.guard';
 import { RBACGuard } from './auth/gaurd/RBAC.guard';
+import { RefreshToken } from './auth/entities/refresh.entity';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { RBACGuard } from './auth/gaurd/RBAC.guard';
         database: configService.get<string>('DB_DATABASE'),
         synchronize: configService.get<string>('NODE_ENV') !== 'prod',
         ssl: configService.get<string>('NODE_ENV') === 'prod',
-        entities: [Conversation, Message, Situation, User],
+        entities: [Conversation, Message, Situation, User, RefreshToken],
       }),
       inject: [ConfigService],
     }),
@@ -61,6 +62,7 @@ export class AppModule implements NestModule {
       .apply(AuthHeaderValidationMiddleware)
       .exclude({ path: 'auth/login', method: RequestMethod.POST })
       .exclude({ path: 'auth/join', method: RequestMethod.POST })
+      .exclude({ path: 'auth/refresh', method: RequestMethod.POST })
       .forRoutes('*');
   }
 }
