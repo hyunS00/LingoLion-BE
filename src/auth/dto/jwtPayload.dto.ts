@@ -14,14 +14,6 @@ export class JwtPayloadDto {
   sub: string;
 
   @IsDefined()
-  @IsEmail()
-  email: string;
-
-  @IsDefined()
-  @IsString()
-  name: string;
-
-  @IsDefined()
   @IsNumber()
   iat: number;
 

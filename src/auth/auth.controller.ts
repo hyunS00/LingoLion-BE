@@ -1,15 +1,19 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
-import { LocalAuthGuard } from './gaurd/localAuth.guard';
 import { Public } from './decorator/public.decorator';
-import { JwtRefreshAuthGuard } from './gaurd/jwtRefreshAuth.guard';
-import { User } from 'src/users/entities/user.entity';
+import { Request, Response } from 'express';
+import { BasicAuthGuard } from './gaurd/basicAuth.guard';
+import { OpaqueRefreshAuthGuard } from './gaurd/opaqueRefreshAuth.guard';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Public()
   @Post('join')
@@ -18,16 +22,35 @@ export class AuthController {
   }
 
   @Public()
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Post('login')
-  signin(@Request() req: { user: User }) {
-    return this.authService.generateTokens(req.user);
+  async signin(
+    @Req() req: Request & { user: UserDto },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.getAccessAndRefreshToken(req.user, res);
   }
 
   @Public()
-  @UseGuards(JwtRefreshAuthGuard)
+  @UseGuards(OpaqueRefreshAuthGuard)
   @Post('refresh')
-  refreshToken(@Request() req: { user: UserDto }) {
-    return this.authService.refreshAccessToken(req.user);
+  async refreshToken(
+    @Req() req: Request & { user: UserDto },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.getAccessAndRefreshToken(req.user, res);
+  }
+
+  async getAccessAndRefreshToken(user: UserDto, res: Response) {
+    const { accessToken, refreshToken } =
+      await this.authService.generateTokens(user);
+
+    res.cookie('refresh', refreshToken, {
+      httpOnly: true,
+      secure: this.configService.get<string>('NODE_ENV') === 'prod',
+      sameSite: 'strict',
+    });
+
+    return { accessToken };
   }
 }

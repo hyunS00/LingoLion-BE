@@ -1,6 +1,7 @@
 import { Exclude, Transform } from 'class-transformer';
-import { BaseTable } from 'src/common/entities/base-table.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { RefreshToken } from 'src/auth/entities/refresh.entity';
+import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum Role {
   Admin,
@@ -8,7 +9,7 @@ export enum Role {
 }
 
 @Entity()
-export class User extends BaseTable {
+export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -31,4 +32,9 @@ export class User extends BaseTable {
   })
   @Transform(({ value }) => Role[value])
   role: Role;
+
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user, {
+    cascade: true,
+  })
+  refreshToken: RefreshToken[];
 }
