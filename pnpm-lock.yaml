@@ -50,6 +50,9 @@ importers:
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
       emoji-regex:
         specifier: ^10.4.0
         version: 10.4.0
