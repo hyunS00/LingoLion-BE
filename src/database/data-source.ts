@@ -12,6 +12,7 @@ export default new DataSource({
   database: process.env.DB_DATABASE,
   synchronize: false,
   logging: false,
+  ssl: process.env.NODE_ENV === 'prod',
   entities: ['dist/**/**/*.entity.js'],
   migrations: ['dist/database/migrations/*.js'],
 });
