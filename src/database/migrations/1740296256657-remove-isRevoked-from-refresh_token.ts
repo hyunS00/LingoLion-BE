@@ -13,7 +13,7 @@ export class RemoveIsRevokedFromRefreshToken1740296256657
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "refresh_token" ADD "isRevoked" boolean NOT NULL`,
+      `ALTER TABLE "refresh_token" ADD "isRevoked" boolean NOT NULL DEFAULT false`,
     );
   }
 }
