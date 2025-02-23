@@ -31,6 +31,18 @@ export class AuthController {
     return await this.getAccessAndRefreshToken(req.user, res);
   }
 
+  @UseGuards(OpaqueRefreshAuthGuard)
+  @Post('logout')
+  async signout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('refresh', {
+      httpOnly: true,
+      secure: this.configService.get<string>('NODE_ENV') === 'prod',
+      sameSite: 'strict',
+    });
+
+    return;
+  }
+
   @Public()
   @UseGuards(OpaqueRefreshAuthGuard)
   @Post('refresh')
