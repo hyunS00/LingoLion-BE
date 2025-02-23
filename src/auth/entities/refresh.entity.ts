@@ -11,9 +11,6 @@ export class RefreshToken extends BaseTimeEntity {
   hashedSecret: string;
 
   @Column()
-  isRevoked: boolean;
-
-  @Column()
   expiresAt: Date;
 
   @ManyToOne(() => User, (user) => user.refreshToken, { onDelete: 'CASCADE' })

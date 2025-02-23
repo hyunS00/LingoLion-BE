@@ -116,7 +116,6 @@ export class AuthService {
         where: { id: tokenId },
         relations: ['user'],
       });
-      console.log(record);
 
       if (!record) {
         throw new UnauthorizedException();
@@ -128,11 +127,7 @@ export class AuthService {
         throw new UnauthorizedException();
       }
 
-      if (record.isRevoked) {
-        throw new UnauthorizedException();
-      }
-
-      await this.refreshTokenRepository.update(record.id, { isRevoked: true });
+      await this.refreshTokenRepository.delete(record.id);
 
       const now = new Date();
       if (record.expiresAt < now) {
