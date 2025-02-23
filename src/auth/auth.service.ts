@@ -63,15 +63,12 @@ export class AuthService {
       );
 
       const record = await this.refreshTokenRepository.save({
-        isRevoked: false,
         expiresAt,
         user,
         hashedSecret,
       });
       return `${record.id}.${opaqueToken}`;
     } catch (err) {
-      console.log(err);
-
       throw new ServiceUnavailableException();
     }
   }
@@ -88,12 +85,8 @@ export class AuthService {
   }
 
   async join(createUserDto: CreateUserDto) {
-    try {
-      await this.userService.create(createUserDto);
-      return 'sign ok';
-    } catch (error) {
-      throw error;
-    }
+    await this.userService.create(createUserDto);
+    return 'sign ok';
   }
 
   async authenticate(email: string, password: string) {
