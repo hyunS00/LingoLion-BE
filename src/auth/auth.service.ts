@@ -88,11 +88,12 @@ export class AuthService {
   }
 
   async join(createUserDto: CreateUserDto) {
-    const newUser = await this.userService.create(createUserDto);
-    return {
-      accessToken: this.generateAccessToken(newUser),
-      refreshToken: await this.generateRefreshToken(newUser.id),
-    };
+    try {
+      await this.userService.create(createUserDto);
+      return 'sign ok';
+    } catch (error) {
+      throw error;
+    }
   }
 
   async authenticate(email: string, password: string) {

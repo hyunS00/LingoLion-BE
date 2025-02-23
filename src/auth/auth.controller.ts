@@ -40,7 +40,7 @@ export class AuthController {
       sameSite: 'strict',
     });
 
-    return;
+    return 'logout ok';
   }
 
   @Public()
