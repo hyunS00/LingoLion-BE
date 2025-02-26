@@ -36,6 +36,7 @@ export class ChatGptProvider implements IAIProvider {
       });
       return completion.choices[0].message;
     } catch (e) {
+      console.error(e);
       throw new ServiceUnavailableException(
         '추천 서비스를 일시적으로 사용할 수 없습니다.',
       );

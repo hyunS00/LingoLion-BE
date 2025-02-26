@@ -4,8 +4,6 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { SituationRecommendDto } from './dto/situation-recommend.dto';
-import { SituationType } from './entities/situation.entity';
-import { ChatCompletionMessage } from 'openai/resources';
 import { AiService } from 'src/ai/ai.service';
 
 @Injectable()

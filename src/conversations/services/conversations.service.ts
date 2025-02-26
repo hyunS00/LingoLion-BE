@@ -1,13 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateConversationDto } from '../dto/update-conversation.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Conversation } from '../entities/conversation.entity';
 import { Repository } from 'typeorm';
 import { CreateMessageDto } from '../dto/create-message.dto';
 import { Message, Sender } from '../entities/message.entity';
-import { OpenAIService } from 'src/openAI/openAI.service';
 import { CreateConversationDto } from '../dto/create-conversation.dto';
 import { Situation } from '../entities/situation.entity';
+import { AiService } from 'src/ai/ai.service';
 
 @Injectable()
 export class ConversationsService {
@@ -18,7 +18,7 @@ export class ConversationsService {
     private readonly messagesRepository: Repository<Message>,
     @InjectRepository(Situation)
     private readonly situationRepository: Repository<Situation>,
-    private readonly openAIService: OpenAIService,
+    private readonly aiService: AiService,
   ) {}
 
   async createConversation(createConversationDto: CreateConversationDto) {
@@ -123,13 +123,14 @@ export class ConversationsService {
 
     const { place, aiRole, userRole, goal } = conversation.situation;
 
-    const res = await this.openAIService.simulateConversationPractice(
-      messages.map((m) => ({
-        role: m.sender,
-        content: m.content,
-      })),
-      { place, aiRole, userRole, goal },
-    );
+    const template = `영어회화 장소:${place} AI 역할:${aiRole} 사용자 역할:${userRole} 대화 목표:${goal}`;
+    const model = 'gpt-4o-mini';
+    const context = messages.map((m) => ({
+      role: m.sender,
+      content: m.content,
+    }));
+
+    const res = await this.aiService.askWithContext(template, model, context);
 
     await this.messagesRepository.save({
       content: res.content,
