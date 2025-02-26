@@ -4,11 +4,11 @@ import { SituationsController } from './situations.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Situation } from './entities/situation.entity';
 import { AiModule } from 'src/ai/ai.module';
-import { PromptService } from 'src/ai/prompt/prompt.service';
+import { PromptModule } from 'src/ai/prompt/prompt.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Situation]), AiModule],
+  imports: [TypeOrmModule.forFeature([Situation]), AiModule, PromptModule],
   controllers: [SituationsController],
-  providers: [SituationsService, PromptService],
+  providers: [SituationsService],
 })
 export class SituationsModule {}
