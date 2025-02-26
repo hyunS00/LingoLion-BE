@@ -1,4 +1,10 @@
-import { IsEnum, IsIn, IsString, ValidateIf } from 'class-validator';
+import {
+  IsEnum,
+  IsIn,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 import { SituationType } from '../entities/situation.entity';
 
 export const SituationRecommendType = {
@@ -13,14 +19,18 @@ export class SituationRecommendDto {
   type: SituationRecommendTypeValue;
 
   @IsString()
+  @IsOptional()
   place?: string;
 
   @IsString()
+  @IsOptional()
   aiRole?: string;
 
   @IsString()
+  @IsOptional()
   userRole?: string;
 
   @IsString()
+  @IsOptional()
   goal?: string;
 }
