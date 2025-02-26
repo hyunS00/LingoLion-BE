@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { SituationsService } from './situations.service';
 import { SituationRecommendDto } from './dto/situation-recommend.dto';
 
@@ -6,13 +6,11 @@ import { SituationRecommendDto } from './dto/situation-recommend.dto';
 export class SituationsController {
   constructor(private readonly situationsService: SituationsService) {}
 
-  @Get('recommend')
-  async getRecommendationsEndpoint(
-    @Query()
+  @Post('recommend')
+  async recommendationsEndpoint(
+    @Body()
     situationRecommendDto: SituationRecommendDto,
   ) {
-    return await this.situationsService.getSituationsRecommed(
-      situationRecommendDto,
-    );
+    return await this.situationsService.recommend(situationRecommendDto);
   }
 }
