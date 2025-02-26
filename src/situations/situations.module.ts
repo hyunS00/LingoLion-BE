@@ -3,11 +3,11 @@ import { SituationsService } from './situations.service';
 import { SituationsController } from './situations.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Situation } from './entities/situation.entity';
-import { OpenAIService } from 'src/openAI/openAI.service';
+import { AiModule } from 'src/ai/ai.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Situation])],
+  imports: [TypeOrmModule.forFeature([Situation]), AiModule],
   controllers: [SituationsController],
-  providers: [SituationsService, OpenAIService],
+  providers: [SituationsService],
 })
 export class SituationsModule {}

@@ -7,7 +7,6 @@ import {
 import { ConversationsModule } from './conversations/conversations.module';
 import { Conversation } from './conversations/entities/conversation.entity';
 import { Message } from './conversations/entities/message.entity';
-import { OpenAIModule } from './openAI/openAI.module';
 import { SituationsModule } from './situations/situations.module';
 import { Situation } from './conversations/entities/situation.entity';
 import { AuthModule } from './auth/auth.module';
@@ -20,6 +19,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAccessAuthGuard } from './auth/gaurd/jwtAccessAuth.guard';
 import { RBACGuard } from './auth/gaurd/RBAC.guard';
 import { RefreshToken } from './auth/entities/refresh.entity';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -39,10 +39,10 @@ import { RefreshToken } from './auth/entities/refresh.entity';
       inject: [ConfigService],
     }),
     ConversationsModule,
-    OpenAIModule,
     SituationsModule,
     AuthModule,
     UsersModule,
+    AiModule,
   ],
   controllers: [],
   providers: [

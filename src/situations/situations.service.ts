@@ -4,36 +4,19 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { SituationRecommendDto } from './dto/situation-recommend.dto';
-import { SituationType } from './entities/situation.entity';
-import { OpenAIService } from 'src/openAI/openAI.service';
-import { ChatCompletionMessage } from 'openai/resources';
+import { AiService } from 'src/ai/ai.service';
 
 @Injectable()
 export class SituationsService {
-  constructor(private readonly openAIService: OpenAIService) {}
+  constructor(private readonly aiService: AiService) {}
 
-  private readonly recommendationFuncMap: Record<
-    SituationType,
-    (dto: SituationRecommendDto) => Promise<ChatCompletionMessage>
-  > = {
-    [SituationType.Place]: () => this.openAIService.recommendPlace(),
-    [SituationType.AiRole]: (dto) => this.openAIService.recommendAiRole(dto),
-    [SituationType.UserRole]: (dto) =>
-      this.openAIService.recommendUserRole(dto),
-    [SituationType.Goal]: (dto) => this.openAIService.recommendGoal(dto),
-  };
-
-  async getSituationsRecommed(situationRecommendDto: SituationRecommendDto) {
+  async recommend(situationRecommendDto: SituationRecommendDto) {
     const { type } = situationRecommendDto;
-    const recommendFunction = this.recommendationFuncMap[type];
-    if (!recommendFunction) {
-      throw new BadRequestException(
-        `Invalid recommendation type: [${type}]. Valid types are: ${Object.values(SituationType).join(', ')}`,
-      );
-    }
-
-    const data = await recommendFunction(situationRecommendDto);
-
+    /* 타입에 맞는 템플릿 생성 예정 */
+    const template = `${type} 추천해줘`;
+    /* 사용자가 원하는 모델 선택 예정 */
+    const model = 'gpt-4o-mini';
+    const data = await this.aiService.ask(template, model);
     return { type, data };
   }
 }
