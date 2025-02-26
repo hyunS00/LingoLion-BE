@@ -1,5 +1,9 @@
-import { ChatCompletionMessage } from 'openai/resources';
 import { CreateMessageDto } from 'src/conversations/dto/create-message.dto';
+
+export interface ChatCompletionMessage {
+  content: string;
+  role: string;
+}
 
 export interface IAIProvider {
   generateResponse(

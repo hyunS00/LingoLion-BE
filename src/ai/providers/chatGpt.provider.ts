@@ -1,9 +1,8 @@
 import { ConfigService } from '@nestjs/config';
-import { IAIProvider } from './ai.interface';
+import { ChatCompletionMessage, IAIProvider } from './ai.interface';
 import OpenAI from 'openai';
 import { CreateMessageDto } from 'src/conversations/dto/create-message.dto';
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
-import { ChatCompletionMessage } from 'openai/resources';
 
 @Injectable()
 export class ChatGptProvider implements IAIProvider {
@@ -27,14 +26,20 @@ export class ChatGptProvider implements IAIProvider {
       const completion = await this.openAI.chat.completions.create({
         messages: [
           {
-            role: 'developer',
+            role: 'system',
             content: prompt,
           },
           ...(messages || []),
         ],
         model,
       });
-      return completion.choices[0].message;
+
+      const message: ChatCompletionMessage = {
+        content: completion.choices[0].message.content,
+        role: completion.choices[0].message.role,
+      };
+
+      return message;
     } catch (e) {
       console.error(e);
       throw new ServiceUnavailableException(

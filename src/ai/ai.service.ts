@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IAIProvider } from './providers/ai.interface';
+import { ChatCompletionMessage, IAIProvider } from './providers/ai.interface';
 import { CreateMessageDto } from 'src/conversations/dto/create-message.dto';
-import { ChatCompletionMessage } from 'openai/resources';
 
 @Injectable()
 export class AiService {
