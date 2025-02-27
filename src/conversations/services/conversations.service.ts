@@ -6,8 +6,8 @@ import { Repository } from 'typeorm';
 import { CreateMessageDto } from '../dto/create-message.dto';
 import { Message, Sender } from '../entities/message.entity';
 import { CreateConversationDto } from '../dto/create-conversation.dto';
-import { Situation } from '../entities/situation.entity';
 import { AiService } from 'src/ai/ai.service';
+import { Situation } from 'src/situations/entities/situation.entity';
 
 @Injectable()
 export class ConversationsService {

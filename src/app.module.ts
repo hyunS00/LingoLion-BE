@@ -8,7 +8,6 @@ import { ConversationsModule } from './conversations/conversations.module';
 import { Conversation } from './conversations/entities/conversation.entity';
 import { Message } from './conversations/entities/message.entity';
 import { SituationsModule } from './situations/situations.module';
-import { Situation } from './conversations/entities/situation.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
@@ -20,6 +19,7 @@ import { JwtAccessAuthGuard } from './auth/gaurd/jwtAccessAuth.guard';
 import { RBACGuard } from './auth/gaurd/RBAC.guard';
 import { RefreshToken } from './auth/entities/refresh.entity';
 import { AiModule } from './ai/ai.module';
+import { Situation } from './situations/entities/situation.entity';
 
 @Module({
   imports: [
