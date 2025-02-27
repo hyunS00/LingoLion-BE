@@ -5,7 +5,7 @@ import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 import { JwtPayloadDto } from '../dto/jwtPayload.dto';
 import { ConfigService } from '@nestjs/config';
-import { UserDto } from '../dto/user.dto';
+import { UserIdRoleDto } from '../../users/dto/userIdRole.dto';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(
@@ -19,7 +19,7 @@ export class JwtAccessStrategy extends PassportStrategy(
       secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
     });
   }
-  async validate(payload: Record<string, unknown>): Promise<UserDto> {
+  async validate(payload: Record<string, unknown>): Promise<UserIdRoleDto> {
     const payloadDto = plainToInstance(JwtPayloadDto, payload);
 
     try {
@@ -28,7 +28,7 @@ export class JwtAccessStrategy extends PassportStrategy(
       throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
 
-    const userDto: UserDto = {
+    const userDto: UserIdRoleDto = {
       id: payloadDto.sub,
       role: payloadDto.role,
     };

@@ -13,6 +13,6 @@ export class RefreshToken extends BaseTimeEntity {
   @Column()
   expiresAt: Date;
 
-  @ManyToOne(() => User, (user) => user.refreshToken, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.refreshTokens, { onDelete: 'CASCADE' })
   user: User;
 }

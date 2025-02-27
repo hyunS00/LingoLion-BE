@@ -2,13 +2,14 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Message } from './message.entity';
 import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
-import { Situation } from './situation.entity';
+import { Situation } from 'src/situations/entities/situation.entity';
 
 @Entity()
 export class Conversation extends BaseTimeEntity {
@@ -21,11 +22,9 @@ export class Conversation extends BaseTimeEntity {
   @Column()
   icon: string;
 
-  @OneToOne(() => Situation, (situation) => situation.conversation, {
-    cascade: true,
+  @ManyToOne(() => Situation, (situation) => situation.conversations, {
     nullable: false,
   })
-  @JoinColumn()
   situation: Situation;
 
   @OneToMany(() => Message, (message) => message.conversation)

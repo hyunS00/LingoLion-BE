@@ -1,5 +1,15 @@
 import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Conversation } from 'src/conversations/entities/conversation.entity';
+import { User } from 'src/users/entities/user.entity';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum SituationType {
   'Place' = 'place',
@@ -14,8 +24,20 @@ export class Situation extends BaseTimeEntity {
   id: number;
 
   @Column()
-  type: SituationType;
+  place: string;
 
   @Column()
-  name: string;
+  aiRole: string;
+
+  @Column()
+  userRole: string;
+
+  @Column()
+  goal: string;
+
+  @OneToMany(() => Conversation, (conversation) => conversation.situation)
+  conversations: Conversation[];
+
+  @ManyToOne(() => User, (user) => user.situations)
+  user: User;
 }
