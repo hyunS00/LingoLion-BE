@@ -95,10 +95,10 @@ export class SituationsService {
       throw new ForbiddenException();
     }
 
-    const updatedSituation = await this.situationRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
+    const updatedSituation = await this.situationRepository.update(
+      id,
+      updateSituationDto,
+    );
 
     return updatedSituation;
   }
