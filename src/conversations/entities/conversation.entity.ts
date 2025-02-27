@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -21,10 +22,9 @@ export class Conversation extends BaseTimeEntity {
   @Column()
   icon: string;
 
-  @OneToMany(() => Situation, (situation) => situation.conversation, {
+  @ManyToOne(() => Situation, (situation) => situation.conversations, {
     nullable: false,
   })
-  @JoinColumn()
   situation: Situation;
 
   @OneToMany(() => Message, (message) => message.conversation)

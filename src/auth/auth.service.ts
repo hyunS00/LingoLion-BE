@@ -10,7 +10,7 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/entities/user.entity';
-import { UserDto } from './dto/user.dto';
+import { UserIdRoleDto } from '../users/dto/userIdRole.dto';
 import { randomBytes } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refresh.entity';
@@ -37,7 +37,7 @@ export class AuthService {
     return randomBytes(32).toString('hex');
   }
 
-  generateAccessToken(user: UserDto) {
+  generateAccessToken(user: UserIdRoleDto) {
     const payload = {
       sub: user.id,
       role: user.role,
@@ -73,13 +73,13 @@ export class AuthService {
     }
   }
 
-  async generateTokens(user: UserDto) {
+  async generateTokens(user: UserIdRoleDto | User) {
     const accessToken = this.generateAccessToken(user);
     const refreshToken = await this.generateRefreshToken(user.id);
     return { accessToken, refreshToken };
   }
 
-  refreshAccessToken(user: UserDto) {
+  refreshAccessToken(user: UserIdRoleDto) {
     const accessToken = this.generateAccessToken(user);
     return { accessToken };
   }
@@ -104,7 +104,7 @@ export class AuthService {
     return exUser;
   }
 
-  async validateRefreshToken(tokenId: string, secret: string) {
+  async validateRefreshToken(tokenId: string, secret: string): Promise<User> {
     try {
       const record = await this.refreshTokenRepository.findOne({
         where: { id: tokenId },

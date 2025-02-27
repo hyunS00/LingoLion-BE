@@ -1,7 +1,10 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
+  NotFoundException,
   ServiceUnavailableException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { SituationRecommendDto } from './dto/situation-recommend.dto';
 import { AiService } from 'src/ai/ai.service';
@@ -10,6 +13,8 @@ import { CreateSituationDto } from './dto/create-situation.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Situation } from './entities/situation.entity';
+import { User } from 'src/users/entities/user.entity';
+import { UpdateSituationDto } from './dto/update-situation.dto';
 
 @Injectable()
 export class SituationsService {
@@ -18,6 +23,8 @@ export class SituationsService {
     private readonly promptService: PromptService,
     @InjectRepository(Situation)
     private readonly situationRepository: Repository<Situation>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async recommend(situationRecommendDto: SituationRecommendDto) {
@@ -35,8 +42,87 @@ export class SituationsService {
     return { type, data };
   }
 
-  async create(createSituationDto: CreateSituationDto) {
-    const sidtuation = await this.situationRepository.save(createSituationDto);
-    return sidtuation.id;
+  async create(createSituationDto: CreateSituationDto, userId: string) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const situation = await this.situationRepository.save({
+      ...createSituationDto,
+      user,
+    });
+
+    return situation.id;
+  }
+
+  async findById(id: number) {
+    const situation = await this.situationRepository.findOne({ where: { id } });
+    return situation;
+  }
+
+  async findByUserId(id: string) {
+    const sidtuations = await this.situationRepository.find({
+      where: { user: { id } },
+    });
+    return sidtuations;
+  }
+
+  async findAll() {
+    const sidtuations = await this.situationRepository.find();
+    return sidtuations;
+  }
+
+  async update(
+    id: number,
+    updateSituationDto: UpdateSituationDto,
+    userId: string,
+  ) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const situation = await this.situationRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!situation) {
+      throw new NotFoundException();
+    }
+
+    if (situation.user.id !== user.id) {
+      throw new ForbiddenException();
+    }
+
+    const updatedSituation = await this.situationRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+
+    return updatedSituation;
+  }
+
+  async delete(id: number, userId: string) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const situation = await this.situationRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!situation) {
+      throw new NotFoundException();
+    }
+
+    if (situation.user?.id !== user.id) {
+      throw new ForbiddenException();
+    }
+
+    await this.situationRepository.delete(id);
+
+    return id;
   }
 }

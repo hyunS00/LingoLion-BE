@@ -5,9 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Situation } from './entities/situation.entity';
 import { AiModule } from 'src/ai/ai.module';
 import { PromptModule } from 'src/ai/prompt/prompt.module';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Situation]), AiModule, PromptModule],
+  imports: [
+    TypeOrmModule.forFeature([Situation, User]),
+    AiModule,
+    PromptModule,
+  ],
   controllers: [SituationsController],
   providers: [SituationsService],
 })

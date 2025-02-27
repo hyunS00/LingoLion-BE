@@ -1,7 +1,15 @@
 import { Exclude, Transform } from 'class-transformer';
 import { RefreshToken } from 'src/auth/entities/refresh.entity';
 import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Situation } from 'src/situations/entities/situation.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum Role {
   Admin,
@@ -36,5 +44,8 @@ export class User extends BaseTimeEntity {
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user, {
     cascade: true,
   })
-  refreshToken: RefreshToken[];
+  refreshTokens: RefreshToken[];
+
+  @OneToMany(() => Situation, (situation) => situation.user)
+  situations: Situation[];
 }
