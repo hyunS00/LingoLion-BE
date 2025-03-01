@@ -39,7 +39,7 @@ export class SituationsService {
       return jsonData;
     } catch (error) {
       console.error(`시도횟수: ${callCnt}\n${error}`);
-      return await this.askAndParse(template, model, callCnt++);
+      return await this.askAndParse(template, model, callCnt + 1);
     }
   }
 
