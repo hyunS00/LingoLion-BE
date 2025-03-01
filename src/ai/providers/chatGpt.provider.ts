@@ -43,7 +43,7 @@ export class ChatGptProvider implements IAIProvider {
     } catch (e) {
       console.error(e);
       throw new ServiceUnavailableException(
-        '추천 서비스를 일시적으로 사용할 수 없습니다.',
+        'AI 서비스를 일시적으로 사용할 수 없습니다.',
       );
     }
   }

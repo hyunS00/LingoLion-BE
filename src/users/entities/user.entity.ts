@@ -1,6 +1,7 @@
 import { Exclude, Transform } from 'class-transformer';
 import { RefreshToken } from 'src/auth/entities/refresh.entity';
 import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
+import { Conversation } from 'src/conversations/entities/conversation.entity';
 import { Situation } from 'src/situations/entities/situation.entity';
 import {
   Column,
@@ -48,4 +49,7 @@ export class User extends BaseTimeEntity {
 
   @OneToMany(() => Situation, (situation) => situation.user)
   situations: Situation[];
+
+  @OneToMany(() => Conversation, (conversation) => conversation.user)
+  conversations: Conversation[];
 }
