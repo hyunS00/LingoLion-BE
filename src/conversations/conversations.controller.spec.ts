@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConversationsService } from '../services/conversations.service';
+import { ConversationsService } from './conversations.service';
 import { ConversationsController } from './conversations.controller';
 
 describe('ChatsController', () => {

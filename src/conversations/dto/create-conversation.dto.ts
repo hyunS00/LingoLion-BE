@@ -1,7 +1,12 @@
-import { IsDefined, IsString, ValidateNested } from 'class-validator';
+import {
+  IsDefined,
+  IsNumber,
+  IsObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { IsEmoji } from '../decorator/isEmoji-validation.decorator';
-import { SituationDto } from './situation.dto';
-import { Type } from 'class-transformer';
+import { ConversationMetaData } from './conversationMetadata.dto';
 
 export class CreateConversationDto {
   @IsString()
@@ -11,7 +16,9 @@ export class CreateConversationDto {
   icon: string;
 
   @IsDefined()
-  @ValidateNested()
-  @Type(() => SituationDto)
-  situation: SituationDto;
+  @IsNumber()
+  situationId: number;
+
+  @IsObject({ each: true })
+  metaData: ConversationMetaData;
 }
