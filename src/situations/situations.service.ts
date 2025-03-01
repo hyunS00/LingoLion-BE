@@ -27,6 +27,22 @@ export class SituationsService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async askAndParse(template: string, model: string, callCnt: number = 0) {
+    if (callCnt >= 4) {
+      throw new ServiceUnavailableException(
+        '일시적으로 AI 서비스에 장애가 발생했습니다. 나중에 다시 시도해주세요',
+      );
+    }
+    try {
+      const data = await this.aiService.ask(template, model);
+      const jsonData = JSON.parse(data.content);
+      return jsonData;
+    } catch (error) {
+      console.error(`시도횟수: ${callCnt}\n${error}`);
+      return await this.askAndParse(template, model, callCnt + 1);
+    }
+  }
+
   async recommend(situationRecommendDto: SituationRecommendDto) {
     const { type } = situationRecommendDto;
 
@@ -34,11 +50,10 @@ export class SituationsService {
     const template = this.promptService.buildRecommendationPrompt(
       situationRecommendDto,
     );
-    console.log(template);
-
     /* 사용자가 원하는 모델 선택 예정 */
     const model = 'gpt-4o-mini';
-    const data = await this.aiService.ask(template, model);
+    const data = await this.askAndParse(template, model);
+
     return { type, data };
   }
 
