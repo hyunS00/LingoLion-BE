@@ -38,7 +38,7 @@ export class SituationsService {
       const jsonData = JSON.parse(data.content);
       return jsonData;
     } catch (error) {
-      console.error(error);
+      console.error(`시도횟수: ${callCnt}\n${error}`);
       return await this.askAndParse(template, model, callCnt++);
     }
   }
