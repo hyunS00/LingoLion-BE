@@ -11,7 +11,10 @@ export class TypeOrmConversationRepository implements IConversationRepository {
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
   ) {}
-  async findOneById(id: number, relations?: string[]): Promise<Conversation> {
+  async findOneById(
+    id: number,
+    relations?: string[],
+  ): Promise<Conversation | null> {
     return await this.conversationRepository.findOne({
       where: { id },
       relations,
@@ -24,7 +27,7 @@ export class TypeOrmConversationRepository implements IConversationRepository {
   ): Promise<Conversation> {
     return await this.conversationRepository.save(conversationData);
   }
-  async findAll(relations?: string[]): Promise<Conversation[]> {
+  async findAll(relations?: string[]): Promise<Conversation[] | null> {
     return await this.conversationRepository.find({ relations });
   }
   async findOneByIdAndUserId(

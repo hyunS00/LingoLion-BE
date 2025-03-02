@@ -15,7 +15,7 @@ export class TypeOrmMessageRepository implements IMessageRepository {
   }
   async findByConversationId(
     conversationId: number,
-    options: FindManyOptions<Message>,
+    options: FindManyOptions<Message | null>,
   ): Promise<Message[]> {
     const { where: optionsWhere, ...restOptions } = options || {};
     return await this.messageRepository.find({
