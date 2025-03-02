@@ -7,6 +7,8 @@ import { Message } from './entities/message.entity';
 import { AiModule } from 'src/ai/ai.module';
 import { Situation } from 'src/situations/entities/situation.entity';
 import { PromptModule } from 'src/ai/prompt/prompt.module';
+import { TypeOrmConversationRepository } from './repositories/typeorm-conversation.repository';
+import { TypeOrmMessageRepository } from './repositories/typeorm-message.repositoy';
 
 @Module({
   imports: [
@@ -15,6 +17,16 @@ import { PromptModule } from 'src/ai/prompt/prompt.module';
     PromptModule,
   ],
   controllers: [ConversationsController],
-  providers: [ConversationsService],
+  providers: [
+    {
+      provide: 'IConversationRepository',
+      useClass: TypeOrmConversationRepository,
+    },
+    {
+      provide: 'IMessageRepository',
+      useClass: TypeOrmMessageRepository,
+    },
+    ConversationsService,
+  ],
 })
 export class ConversationsModule {}
