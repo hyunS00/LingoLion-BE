@@ -3,7 +3,9 @@ import { Conversation } from '../entities/conversation.entity';
 import { IConversationRepository } from './conversation.repository.interface';
 import { Repository } from 'typeorm';
 import { UpdateConversationDto } from '../dto/update-conversation.dto';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class TypeOrmConversationRepository implements IConversationRepository {
   constructor(
     @InjectRepository(Conversation)

@@ -2,7 +2,9 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { Message } from '../entities/message.entity';
 import { IMessageRepository } from './message.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class TypeOrmMessageRepository implements IMessageRepository {
   constructor(
     @InjectRepository(Message)
@@ -15,9 +17,10 @@ export class TypeOrmMessageRepository implements IMessageRepository {
     conversationId: number,
     options: FindManyOptions<Message>,
   ): Promise<Message[]> {
+    const { where: optionsWhere, ...restOptions } = options || {};
     return await this.messageRepository.find({
-      where: { conversation: { id: conversationId } },
-      ...options,
+      ...restOptions,
+      where: { conversation: { id: conversationId }, ...optionsWhere },
     });
   }
 }
