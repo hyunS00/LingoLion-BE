@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Conversation } from './entities/conversation.entity';
 import { Repository } from 'typeorm';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { Message, Sender } from './entities/message.entity';
@@ -14,14 +13,16 @@ import { CreateConversationDto } from './dto/create-conversation.dto';
 import { AiService } from 'src/ai/ai.service';
 import { Situation } from 'src/situations/entities/situation.entity';
 import { PromptService } from 'src/ai/prompt/prompt.service';
+import { IConversationRepository } from './repositories/conversation.repository.interface';
+import { IMessageRepository } from './repositories/message.repository.interface';
 
 @Injectable()
 export class ConversationsService {
   constructor(
-    @InjectRepository(Conversation)
-    private readonly conversationsRepository: Repository<Conversation>,
-    @InjectRepository(Message)
-    private readonly messagesRepository: Repository<Message>,
+    @Inject('IConversationRepository')
+    private readonly conversationRepository: IConversationRepository,
+    @Inject('IMessageRepository')
+    private readonly messagesRepository: IMessageRepository,
     @InjectRepository(Situation)
     private readonly situationRepository: Repository<Situation>,
     private readonly aiService: AiService,
@@ -42,7 +43,7 @@ export class ConversationsService {
       throw new NotFoundException();
     }
 
-    const conversation = await this.conversationsRepository.save({
+    const conversation = await this.conversationRepository.save({
       ...restDto,
       situation,
       user,
@@ -51,18 +52,19 @@ export class ConversationsService {
   }
 
   async findAll() {
-    return await this.conversationsRepository.find({
-      relations: ['situation'],
-    });
+    const relations = ['situation'];
+    return await this.conversationRepository.findAll(relations);
   }
 
   async findUserConversation(id: number, userId: string) {
-    const conversation = await this.conversationsRepository.findOne({
-      where: { id },
-      relations: ['situation', 'messages', 'user'],
-    });
+    const relations = ['situation', 'messages'];
+    const conversation = await this.conversationRepository.findOneByIdAndUserId(
+      id,
+      userId,
+      relations,
+    );
 
-    if (!conversation || conversation.user?.id !== userId) {
+    if (!conversation) {
       throw new ForbiddenException();
     }
 
@@ -74,50 +76,51 @@ export class ConversationsService {
     updateConversationDto: UpdateConversationDto,
     userId: string,
   ) {
-    const conversation = await this.conversationsRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
+    const conversation = await this.conversationRepository.findOneByIdAndUserId(
+      id,
+      userId,
+    );
 
-    if (!conversation || conversation.user?.id !== userId) {
+    if (!conversation) {
       throw new ForbiddenException();
     }
 
-    await this.conversationsRepository.update({ id }, updateConversationDto);
+    await this.conversationRepository.update(id, updateConversationDto);
 
-    const updatedConversation = await this.conversationsRepository.findOne({
-      where: { id },
-    });
+    const updatedConversation =
+      await this.conversationRepository.findOneById(id);
 
     return updatedConversation;
   }
 
   async removeUserConversation(id: number, userId: string) {
-    const conversation = await this.conversationsRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
+    const conversation = await this.conversationRepository.findOneByIdAndUserId(
+      id,
+      userId,
+    );
 
-    if (!conversation || conversation.user?.id !== userId) {
+    if (!conversation) {
       throw new ForbiddenException();
     }
 
-    await this.conversationsRepository.delete(id);
+    await this.conversationRepository.delete(id);
 
     return id;
   }
 
   async createMessageInUserConversation(
-    id: number,
+    conversationId: number,
     createMessageDto: CreateMessageDto,
     userId: string,
   ) {
-    const conversation = await this.conversationsRepository.findOne({
-      where: { id },
-      relations: ['situation', 'user'],
-    });
+    const relations = ['situation'];
+    const conversation = await this.conversationRepository.findOneByIdAndUserId(
+      conversationId,
+      userId,
+      relations,
+    );
 
-    if (!conversation || conversation.user?.id !== userId) {
+    if (!conversation) {
       throw new ForbiddenException();
     }
 
@@ -127,11 +130,13 @@ export class ConversationsService {
       sender: Sender.user,
     });
 
-    const messages = await this.messagesRepository.find({
-      select: ['sender', 'content'],
-      where: { conversation: { id } },
-      order: { createdAt: 'ASC' },
-    });
+    const messages = await this.messagesRepository.findByConversationId(
+      conversationId,
+      {
+        select: ['sender', 'content'],
+        order: { createdAt: 'ASC' },
+      },
+    );
 
     const template = this.promptService.buildSituationPrompt(
       conversation.situation,
@@ -154,12 +159,14 @@ export class ConversationsService {
   }
 
   async findUserConversationMessages(id: number, userId: string) {
-    const conversation = await this.conversationsRepository.findOne({
-      where: { id },
-      relations: ['user', 'messages'],
-    });
+    const relations = ['messages'];
+    const conversation = await this.conversationRepository.findOneByIdAndUserId(
+      id,
+      userId,
+      relations,
+    );
 
-    if (!conversation || conversation.user.id !== userId) {
+    if (!conversation) {
       throw new ForbiddenException();
     }
 
