@@ -3,7 +3,13 @@ import { Conversation } from '../entities/conversation.entity';
 import { IConversationRepository } from './conversation.repository.interface';
 import { Repository } from 'typeorm';
 import { UpdateConversationDto } from '../dto/update-conversation.dto';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
+import {
+  createEndCursor,
+  decodeCursor,
+  validateCursor,
+} from 'src/common/utils/pagination.util';
 
 @Injectable()
 export class TypeOrmConversationRepository implements IConversationRepository {
@@ -11,6 +17,7 @@ export class TypeOrmConversationRepository implements IConversationRepository {
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
   ) {}
+
   async findOneById(
     id: number,
     relations?: string[],
@@ -29,6 +36,47 @@ export class TypeOrmConversationRepository implements IConversationRepository {
   }
   async findAll(relations?: string[]): Promise<Conversation[] | null> {
     return await this.conversationRepository.find({ relations });
+  }
+  async findByUserIdWithCursor(
+    userId: string,
+    cursor?: string,
+    limit?: number,
+  ): Promise<PaginatedResponseDto<Conversation>> {
+    const qb = this.conversationRepository
+      .createQueryBuilder('conversation')
+      .where('conversation.userId = :userId', { userId })
+      .orderBy('conversation.id', 'DESC')
+      .limit(limit + 1);
+
+    if (cursor) {
+      try {
+        const decodedCursor = decodeCursor(cursor);
+        const parsedCursor = JSON.stringify(decodedCursor);
+        const cursorId = validateCursor(parsedCursor);
+        qb.andWhere('conversation.id < :id', { id: cursorId });
+      } catch (error) {
+        console.error(error);
+        throw new BadRequestException('잘못된 커서 포맷');
+      }
+    }
+
+    const conversations = await qb.getMany();
+
+    const hasNextPage = conversations.length > limit;
+    if (hasNextPage) {
+      conversations.pop();
+    }
+
+    const endCursor =
+      conversations.length > 0 ? createEndCursor(conversations) : null;
+
+    return {
+      data: conversations,
+      pageInfo: {
+        hasNextPage,
+        endCursor,
+      },
+    };
   }
   async findOneByIdAndUserId(
     id: number,

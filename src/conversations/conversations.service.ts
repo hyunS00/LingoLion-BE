@@ -56,6 +56,17 @@ export class ConversationsService {
     return await this.conversationRepository.findAll(relations);
   }
 
+  async findUserConversations(userId: string, cursor?: string, limit?: number) {
+    const conversations =
+      await this.conversationRepository.findByUserIdWithCursor(
+        userId,
+        cursor,
+        limit,
+      );
+
+    return conversations;
+  }
+
   async findUserConversation(id: number, userId: string) {
     const relations = ['situation', 'messages'];
     const conversation = await this.conversationRepository.findOneByIdAndUserId(

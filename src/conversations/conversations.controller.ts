@@ -36,10 +36,22 @@ export class ConversationsController {
     );
   }
 
-  @Get()
+  @Get('all')
   @Roles(Role.Admin)
   findAll() {
     return this.conversationsService.findAll();
+  }
+
+  @Get()
+  findUserConversations(
+    @AuthUser('id') userId: string,
+    @Query() cursorPaginationDto: CursorPaginationDto,
+  ) {
+    return this.conversationsService.findUserConversations(
+      userId,
+      cursorPaginationDto.cursor,
+      cursorPaginationDto.limit,
+    );
   }
 
   @Get(':id')
@@ -77,8 +89,6 @@ export class ConversationsController {
     @AuthUser('id') userId: string,
     @Query() cursorPaginationDto: CursorPaginationDto,
   ) {
-    console.log(cursorPaginationDto);
-
     return this.conversationsService.findUserConversationMessages(
       id,
       userId,
