@@ -158,18 +158,25 @@ export class ConversationsService {
     return { data: res };
   }
 
-  async findUserConversationMessages(id: number, userId: string) {
-    const relations = ['messages'];
+  async findUserConversationMessages(
+    id: number,
+    userId: string,
+    cusor: string,
+    limit: number,
+  ) {
     const conversation = await this.conversationRepository.findOneByIdAndUserId(
       id,
       userId,
-      relations,
     );
 
     if (!conversation) {
       throw new ForbiddenException();
     }
 
-    return conversation.messages;
+    return await this.messagesRepository.findByConversationIdWithCursor(
+      id,
+      cusor,
+      limit,
+    );
   }
 }

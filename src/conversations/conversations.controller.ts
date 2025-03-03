@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ConversationsService } from './conversations.service';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
@@ -17,6 +18,7 @@ import { CreateConversationDto } from './dto/create-conversation.dto';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/users/entities/user.entity';
 import { AuthUser } from 'src/users/decorator/authUser.decorator';
+import { CursorPaginationDto } from 'src/common/dto/cursor-pagination.dto';
 
 @Controller('conversations')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -73,8 +75,16 @@ export class ConversationsController {
   getMessagesForConversation(
     @Param('id', ParseIntPipe) id: number,
     @AuthUser('id') userId: string,
+    @Query() cursorPaginationDto: CursorPaginationDto,
   ) {
-    return this.conversationsService.findUserConversationMessages(id, userId);
+    console.log(cursorPaginationDto);
+
+    return this.conversationsService.findUserConversationMessages(
+      id,
+      userId,
+      cursorPaginationDto.cursor,
+      cursorPaginationDto.limit,
+    );
   }
 
   @Post(':id/message')

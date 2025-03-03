@@ -8,7 +8,7 @@ import { AiModule } from 'src/ai/ai.module';
 import { Situation } from 'src/situations/entities/situation.entity';
 import { PromptModule } from 'src/ai/prompt/prompt.module';
 import { TypeOrmConversationRepository } from './repositories/typeorm-conversation.repository';
-import { TypeOrmMessageRepository } from './repositories/typeorm-message.repositoy';
+import { TypeOrmMessageRepository } from './repositories/typeorm-message.repository';
 
 @Module({
   imports: [
