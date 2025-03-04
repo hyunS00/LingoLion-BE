@@ -4,17 +4,19 @@ import { IMessageRepository } from './message.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
-import {
-  createEndCursorId,
-  validateCursor,
-} from 'src/common/utils/pagination.util';
+import { BaseRepository } from 'src/common/repositories/base.repository';
 
 @Injectable()
-export class TypeOrmMessageRepository implements IMessageRepository {
+export class TypeOrmMessageRepository
+  extends BaseRepository<Message>
+  implements IMessageRepository
+{
   constructor(
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
-  ) {}
+  ) {
+    super(messageRepository);
+  }
   async save(messageData: Partial<Message>): Promise<Message> {
     return await this.messageRepository.save(messageData);
   }
@@ -35,37 +37,10 @@ export class TypeOrmMessageRepository implements IMessageRepository {
     cursor?: string,
     limit: number = 10,
   ): Promise<PaginatedResponseDto<Message>> {
-    const qb = this.messageRepository
-      .createQueryBuilder('message')
-      .where('message.conversationId = :conversationId', { conversationId })
-      .orderBy('message.id', 'DESC')
-      .take(limit + 1);
-
-    if (cursor) {
-      try {
-        const cursorId = validateCursor(cursor);
-        qb.andWhere('message.id < :cursor', { cursor: cursorId });
-      } catch (error) {
-        console.error(error);
-        throw new BadRequestException();
-      }
-    }
-
-    const messages = await qb.getMany();
-
-    const hasNextPage = messages.length > limit;
-    if (hasNextPage) {
-      messages.pop();
-    }
-
-    const endCursor = messages.length > 0 ? createEndCursorId(messages) : null;
-
-    return {
-      data: messages,
-      pageInfo: {
-        hasNextPage,
-        endCursor,
-      },
-    };
+    const qb = this.createQueryBuilder('message').where(
+      'message.conversationId = :conversationId',
+      { conversationId },
+    );
+    return await this.applyDateIdPagination(qb, cursor, limit);
   }
 }
