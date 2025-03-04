@@ -3,14 +3,7 @@ import { RefreshToken } from 'src/auth/entities/refresh.entity';
 import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
 import { Conversation } from 'src/conversations/entities/conversation.entity';
 import { Situation } from 'src/situations/entities/situation.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum Role {
   Admin,

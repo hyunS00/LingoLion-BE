@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Inject,
   Injectable,
@@ -11,12 +10,9 @@ import { SituationRecommendDto } from './dto/situation-recommend.dto';
 import { AiService } from 'src/ai/ai.service';
 import { PromptService } from 'src/ai/prompt/prompt.service';
 import { CreateSituationDto } from './dto/create-situation.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Situation } from './entities/situation.entity';
-import { User } from 'src/users/entities/user.entity';
 import { UpdateSituationDto } from './dto/update-situation.dto';
 import { ISituationRepository } from './repositories/situation.repository.interface';
+import { IUserRepository } from 'src/users/repositories/user.repository.interface';
 
 @Injectable()
 export class SituationsService {
@@ -25,8 +21,8 @@ export class SituationsService {
     private readonly promptService: PromptService,
     @Inject('ISituationRepository')
     private readonly situationRepository: ISituationRepository,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository,
   ) {}
 
   async askAndParse(template: string, model: string, callCnt: number = 0) {
@@ -60,7 +56,7 @@ export class SituationsService {
   }
 
   async create(createSituationDto: CreateSituationDto, userId: string) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOneById(userId);
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -100,7 +96,7 @@ export class SituationsService {
     updateSituationDto: UpdateSituationDto,
     userId: string,
   ) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOneById(userId);
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -123,7 +119,7 @@ export class SituationsService {
   }
 
   async delete(id: number, userId: string) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOneById(userId);
     if (!user) {
       throw new UnauthorizedException();
     }
