@@ -6,6 +6,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
 import {
   createEndCursorId,
+  decodeCursorId,
   validateCursor,
 } from 'src/common/utils/pagination.util';
 

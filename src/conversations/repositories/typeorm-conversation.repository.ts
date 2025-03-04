@@ -50,9 +50,7 @@ export class TypeOrmConversationRepository implements IConversationRepository {
 
     if (cursor) {
       try {
-        const decodedCursor = decodeCursorId(cursor);
-        const parsedCursor = JSON.stringify(decodedCursor);
-        const cursorId = validateCursor(parsedCursor);
+        const cursorId = validateCursor(cursor);
         qb.andWhere('conversation.id < :id', { id: cursorId });
       } catch (error) {
         console.error(error);
