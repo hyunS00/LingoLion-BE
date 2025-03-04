@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
 import {
-  createEndCursor,
+  createEndCursorId,
   validateCursor,
 } from 'src/common/utils/pagination.util';
 
@@ -58,7 +58,7 @@ export class TypeOrmMessageRepository implements IMessageRepository {
       messages.pop();
     }
 
-    const endCursor = messages.length > 0 ? createEndCursor(messages) : null;
+    const endCursor = messages.length > 0 ? createEndCursorId(messages) : null;
 
     return {
       data: messages,

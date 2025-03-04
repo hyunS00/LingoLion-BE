@@ -6,8 +6,8 @@ import { UpdateConversationDto } from '../dto/update-conversation.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
 import {
-  createEndCursor,
-  decodeCursor,
+  createEndCursorId,
+  decodeCursorId,
   validateCursor,
 } from 'src/common/utils/pagination.util';
 
@@ -50,7 +50,7 @@ export class TypeOrmConversationRepository implements IConversationRepository {
 
     if (cursor) {
       try {
-        const decodedCursor = decodeCursor(cursor);
+        const decodedCursor = decodeCursorId(cursor);
         const parsedCursor = JSON.stringify(decodedCursor);
         const cursorId = validateCursor(parsedCursor);
         qb.andWhere('conversation.id < :id', { id: cursorId });
@@ -68,7 +68,7 @@ export class TypeOrmConversationRepository implements IConversationRepository {
     }
 
     const endCursor =
-      conversations.length > 0 ? createEndCursor(conversations) : null;
+      conversations.length > 0 ? createEndCursorId(conversations) : null;
 
     return {
       data: conversations,
