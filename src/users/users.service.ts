@@ -68,7 +68,7 @@ export class UsersService {
       ...(hashedPassword && { password: hashedPassword }),
     });
 
-    const updatedUser = this.userRepository.findOneById(id);
+    const updatedUser = await this.userRepository.findOneById(id);
     return updatedUser;
   }
 
