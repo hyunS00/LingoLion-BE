@@ -5,18 +5,20 @@ import { Repository } from 'typeorm';
 import { UpdateConversationDto } from '../dto/update-conversation.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
-import {
-  createEndCursorId,
-  decodeCursorId,
-  validateCursor,
-} from 'src/common/utils/pagination.util';
+import { validateCursorId } from 'src/common/utils/pagination.util';
+import { BaseRepository } from 'src/common/repositories/base.repository';
 
 @Injectable()
-export class TypeOrmConversationRepository implements IConversationRepository {
+export class TypeOrmConversationRepository
+  extends BaseRepository<Conversation>
+  implements IConversationRepository
+{
   constructor(
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
-  ) {}
+  ) {
+    super(conversationRepository);
+  }
 
   async findOneById(
     id: number,
@@ -44,37 +46,9 @@ export class TypeOrmConversationRepository implements IConversationRepository {
   ): Promise<PaginatedResponseDto<Conversation>> {
     const qb = this.conversationRepository
       .createQueryBuilder('conversation')
-      .where('conversation.userId = :userId', { userId })
-      .orderBy('conversation.id', 'DESC')
-      .limit(limit + 1);
+      .where('conversation.userId = :userId', { userId });
 
-    if (cursor) {
-      try {
-        const cursorId = validateCursor(cursor);
-        qb.andWhere('conversation.id < :id', { id: cursorId });
-      } catch (error) {
-        console.error(error);
-        throw new BadRequestException('잘못된 커서 포맷');
-      }
-    }
-
-    const conversations = await qb.getMany();
-
-    const hasNextPage = conversations.length > limit;
-    if (hasNextPage) {
-      conversations.pop();
-    }
-
-    const endCursor =
-      conversations.length > 0 ? createEndCursorId(conversations) : null;
-
-    return {
-      data: conversations,
-      pageInfo: {
-        hasNextPage,
-        endCursor,
-      },
-    };
+    return await this.applyDateIdPagination(qb, cursor, limit);
   }
   async findOneByIdAndUserId(
     id: number,
