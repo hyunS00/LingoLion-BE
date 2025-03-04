@@ -9,12 +9,14 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from './entities/user.entity';
+import { CursorPaginationDto } from 'src/common/dto/cursor-pagination.dto';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -28,8 +30,11 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() cursorPaginationDto: CursorPaginationDto) {
+    return this.usersService.findAll(
+      cursorPaginationDto.cursor,
+      cursorPaginationDto.limit,
+    );
   }
 
   @Get(':id')

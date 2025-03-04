@@ -15,6 +15,7 @@ import { Situation } from 'src/situations/entities/situation.entity';
 import { PromptService } from 'src/ai/prompt/prompt.service';
 import { IConversationRepository } from './repositories/conversation.repository.interface';
 import { IMessageRepository } from './repositories/message.repository.interface';
+import { ISituationRepository } from 'src/situations/repositories/situation.repository.interface';
 
 @Injectable()
 export class ConversationsService {
@@ -23,8 +24,8 @@ export class ConversationsService {
     private readonly conversationRepository: IConversationRepository,
     @Inject('IMessageRepository')
     private readonly messagesRepository: IMessageRepository,
-    @InjectRepository(Situation)
-    private readonly situationRepository: Repository<Situation>,
+    @Inject('ISituationRepository')
+    private readonly situationRepository: ISituationRepository,
     private readonly aiService: AiService,
     private readonly promptService: PromptService,
   ) {}
@@ -35,9 +36,7 @@ export class ConversationsService {
   ) {
     const { situationId, ...restDto } = createConversationDto;
     const user = { id: userId };
-    const situation = await this.situationRepository.findOne({
-      where: { id: situationId },
-    });
+    const situation = await this.situationRepository.findOneById(situationId);
 
     if (!situation) {
       throw new NotFoundException();

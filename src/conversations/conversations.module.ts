@@ -9,6 +9,7 @@ import { Situation } from 'src/situations/entities/situation.entity';
 import { PromptModule } from 'src/ai/prompt/prompt.module';
 import { TypeOrmConversationRepository } from './repositories/typeorm-conversation.repository';
 import { TypeOrmMessageRepository } from './repositories/typeorm-message.repository';
+import { TypeOrmSituationRepository } from 'src/situations/repositories/typeorm-situation.repository';
 
 @Module({
   imports: [
@@ -25,6 +26,10 @@ import { TypeOrmMessageRepository } from './repositories/typeorm-message.reposit
     {
       provide: 'IMessageRepository',
       useClass: TypeOrmMessageRepository,
+    },
+    {
+      provide: 'ISituationRepository',
+      useClass: TypeOrmSituationRepository,
     },
     ConversationsService,
   ],

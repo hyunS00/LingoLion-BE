@@ -1,20 +1,19 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { IUserRepository } from './repositories/user.repository.interface';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @Inject('IUserRepository') private readonly userRepository: IUserRepository,
     private readonly configService: ConfigService,
   ) {}
 
@@ -25,9 +24,7 @@ export class UsersService {
   }
   async create(createUserDto: CreateUserDto) {
     const { email, password, name } = createUserDto;
-    const exUser = await this.userRepository.findOne({
-      where: { email },
-    });
+    const exUser = await this.userRepository.findOneByEmail(email);
     if (exUser) {
       throw new ConflictException();
     }
@@ -42,23 +39,20 @@ export class UsersService {
     return user;
   }
 
-  async findAll() {
-    return await this.userRepository.find();
+  async findAll(cursor?: string, limit: number = 10) {
+    return await this.userRepository.findAllWithCursor(cursor, limit);
   }
 
   async findOne(id: string) {
-    return await this.userRepository.findOne({ where: { id } });
+    return await this.userRepository.findOneById(id);
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findOne({
-      where: { email },
-      select: ['createdAt', 'email', 'id', 'name', 'password', 'role'],
-    });
+    return await this.userRepository.findOneByEmail(email);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOneById(id);
     if (!user) {
       throw new NotFoundException();
     }
@@ -74,12 +68,12 @@ export class UsersService {
       ...(hashedPassword && { password: hashedPassword }),
     });
 
-    const updatedUser = this.userRepository.findOne({ where: { id } });
+    const updatedUser = this.userRepository.findOneById(id);
     return updatedUser;
   }
 
   async remove(id: string) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOneById(id);
     if (!user) {
       throw new NotFoundException();
     }

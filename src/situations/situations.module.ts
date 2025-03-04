@@ -7,6 +7,7 @@ import { AiModule } from 'src/ai/ai.module';
 import { PromptModule } from 'src/ai/prompt/prompt.module';
 import { User } from 'src/users/entities/user.entity';
 import { TypeOrmSituationRepository } from './repositories/typeorm-situation.repository';
+import { TypeOrmUserRepository } from 'src/users/repositories/typeorm-user.repository';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TypeOrmSituationRepository } from './repositories/typeorm-situation.rep
   controllers: [SituationsController],
   providers: [
     { provide: 'ISituationRepository', useClass: TypeOrmSituationRepository },
+    { provide: 'IUserRepository', useClass: TypeOrmUserRepository },
     SituationsService,
   ],
 })
