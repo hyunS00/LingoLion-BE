@@ -172,7 +172,7 @@ export class ConversationsService {
   async findUserConversationMessages(
     id: number,
     userId: string,
-    cusor: string,
+    cursor: string,
     limit: number,
   ) {
     const conversation = await this.conversationRepository.findOneByIdAndUserId(
@@ -186,7 +186,7 @@ export class ConversationsService {
 
     return await this.messagesRepository.findByConversationIdWithCursor(
       id,
-      cusor,
+      cursor,
       limit,
     );
   }
