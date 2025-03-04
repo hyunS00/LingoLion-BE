@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
@@ -15,14 +16,15 @@ import { Repository } from 'typeorm';
 import { Situation } from './entities/situation.entity';
 import { User } from 'src/users/entities/user.entity';
 import { UpdateSituationDto } from './dto/update-situation.dto';
+import { ISituationRepository } from './repositories/situation.repository.interface';
 
 @Injectable()
 export class SituationsService {
   constructor(
     private readonly aiService: AiService,
     private readonly promptService: PromptService,
-    @InjectRepository(Situation)
-    private readonly situationRepository: Repository<Situation>,
+    @Inject('ISituationRepository')
+    private readonly situationRepository: ISituationRepository,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -72,19 +74,24 @@ export class SituationsService {
   }
 
   async findById(id: number) {
-    const situation = await this.situationRepository.findOne({ where: { id } });
+    const situation = await this.situationRepository.findOneById(id);
     return situation;
   }
 
-  async findByUserId(id: string) {
-    const sidtuations = await this.situationRepository.find({
-      where: { user: { id } },
-    });
+  async findByUserId(userId: string, cursor?: string, limit: number = 10) {
+    const sidtuations = await this.situationRepository.findByUserIdWithCursor(
+      userId,
+      cursor,
+      limit,
+    );
     return sidtuations;
   }
 
-  async findAll() {
-    const sidtuations = await this.situationRepository.find();
+  async findAll(cursor?: string, limit: number = 10) {
+    const sidtuations = await this.situationRepository.findAllWithCursor(
+      cursor,
+      limit,
+    );
     return sidtuations;
   }
 
@@ -98,10 +105,8 @@ export class SituationsService {
       throw new UnauthorizedException();
     }
 
-    const situation = await this.situationRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
+    const relations = ['user'];
+    const situation = await this.situationRepository.findOneById(id, relations);
     if (!situation) {
       throw new NotFoundException();
     }
@@ -112,9 +117,7 @@ export class SituationsService {
 
     await this.situationRepository.update(id, updateSituationDto);
 
-    const updatedSituation = await this.situationRepository.findOne({
-      where: { id },
-    });
+    const updatedSituation = await this.situationRepository.findOneById(id);
 
     return updatedSituation;
   }
@@ -125,10 +128,8 @@ export class SituationsService {
       throw new UnauthorizedException();
     }
 
-    const situation = await this.situationRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
+    const relations = ['user'];
+    const situation = await this.situationRepository.findOneById(id, relations);
     if (!situation) {
       throw new NotFoundException();
     }

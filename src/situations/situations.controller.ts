@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { SituationsService } from './situations.service';
@@ -15,6 +16,7 @@ import { SituationRecommendDto } from './dto/situation-recommend.dto';
 import { CreateSituationDto } from './dto/create-situation.dto';
 import { AuthUser } from 'src/users/decorator/authUser.decorator';
 import { UpdateSituationDto } from './dto/update-situation.dto';
+import { CursorPaginationDto } from 'src/common/dto/cursor-pagination.dto';
 
 @Controller('situations')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -38,8 +40,15 @@ export class SituationsController {
   }
 
   @Get('my')
-  async findByMyId(@AuthUser('id') userId: string) {
-    return await this.situationsService.findByUserId(userId);
+  async findByMyId(
+    @AuthUser('id') userId: string,
+    @Query() cursorPaginationDto: CursorPaginationDto,
+  ) {
+    return await this.situationsService.findByUserId(
+      userId,
+      cursorPaginationDto.cursor,
+      cursorPaginationDto.limit,
+    );
   }
 
   @Get(':id')
@@ -48,8 +57,11 @@ export class SituationsController {
   }
 
   @Get()
-  async findAll() {
-    return await this.situationsService.findAll();
+  async findAll(@Query() cursorPaginationDto: CursorPaginationDto) {
+    return await this.situationsService.findAll(
+      cursorPaginationDto.cursor,
+      cursorPaginationDto.limit,
+    );
   }
 
   @Patch(':id')
