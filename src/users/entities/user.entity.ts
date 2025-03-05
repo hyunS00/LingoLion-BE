@@ -18,7 +18,7 @@ export class User extends BaseTimeEntity {
   @Column({ unique: true, nullable: false })
   email: string;
 
-  @Column({ select: false, nullable: false })
+  @Column({ nullable: false })
   @Exclude({
     toPlainOnly: true,
   })
