@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Conversation } from 'src/conversations/entities/conversation.entity';
 import { Message } from 'src/conversations/entities/message.entity';
 import { TypeOrmMessageRepository } from 'src/conversations/repositories/typeorm-message.repository';
+import { SearchService } from './search/search.service';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TypeOrmMessageRepository } from 'src/conversations/repositories/typeorm
     SearchModule,
     AiModule,
     PromptModule,
+    SearchModule,
   ],
   providers: [
     {
@@ -26,6 +28,7 @@ import { TypeOrmMessageRepository } from 'src/conversations/repositories/typeorm
     },
     AgentService,
     RoutingService,
+    SearchService,
   ],
   exports: [AgentService],
 })

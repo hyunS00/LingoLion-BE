@@ -73,7 +73,7 @@ export class PromptService {
     return template ? template(dto) : '기본 추천';
   }
 
-  buildSituationPrompt(dto: SituationDto): string {
+  buildSituationPrompt(dto: any): string {
     const template = this.conversationContextTemplate;
     return template ? template(dto) : '기본 상황';
   }
