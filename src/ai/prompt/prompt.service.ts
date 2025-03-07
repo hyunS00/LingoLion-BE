@@ -9,7 +9,7 @@ import { SituationDto } from 'src/situations/dto/situation.dto';
 export class PromptService {
   private recommendTemplates: Record<string, HandlebarsTemplateDelegate>;
   private conversationContextTemplate: HandlebarsTemplateDelegate;
-
+  private agentTemplate: Record<string, HandlebarsTemplateDelegate>;
   constructor() {
     const recommendTemplateDir = join(
       __dirname,
@@ -28,6 +28,8 @@ export class PromptService {
       conversationContextTemplatePath,
       conversationContextTemplateName,
     );
+    const agentTemplateDir = join(__dirname, 'templates', 'agent');
+    this.agentTemplate = this.loadTemplatesFromDir(agentTemplateDir);
   }
 
   private loadTemplatesFromDir(
@@ -74,5 +76,10 @@ export class PromptService {
   buildSituationPrompt(dto: SituationDto): string {
     const template = this.conversationContextTemplate;
     return template ? template(dto) : '기본 상황';
+  }
+
+  buildAgentPrompt(type: string, context: any): string {
+    const template = this.agentTemplate[type];
+    return template ? template(context) : 'error';
   }
 }

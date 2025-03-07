@@ -22,4 +22,5 @@ export interface IConversationRepository {
     cursor?: string,
     limit?: number,
   ): Promise<PaginatedResponseDto<Conversation>>;
+  findByUserId(userId: string, limit?: number): Promise<Conversation[]>;
 }

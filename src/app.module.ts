@@ -20,6 +20,7 @@ import { RBACGuard } from './auth/gaurd/RBAC.guard';
 import { RefreshToken } from './auth/entities/refresh.entity';
 import { AiModule } from './ai/ai.module';
 import { Situation } from './situations/entities/situation.entity';
+import { AgentModule } from './agent/agent.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { Situation } from './situations/entities/situation.entity';
     AuthModule,
     UsersModule,
     AiModule,
+    AgentModule,
   ],
   controllers: [],
   providers: [

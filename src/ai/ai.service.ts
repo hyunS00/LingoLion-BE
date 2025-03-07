@@ -8,14 +8,14 @@ export class AiService {
     @Inject('IAIProvider') private readonly aiProvider: IAIProvider,
   ) {}
 
-  async ask(prompt: string, model: string): Promise<ChatCompletionMessage> {
+  async ask(prompt: string, model?: string): Promise<ChatCompletionMessage> {
     return await this.aiProvider.generateResponse(prompt, model);
   }
 
   async askWithContext(
     prompt: string,
-    model: string,
-    context: CreateMessageDto[],
+    model?: string,
+    context?: CreateMessageDto[],
   ): Promise<ChatCompletionMessage> {
     return await this.aiProvider.generateResponseWithContext(
       prompt,
