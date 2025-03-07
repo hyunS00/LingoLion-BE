@@ -169,38 +169,31 @@ export class ConversationsService {
     };
     const res = await this.agentService.processMessage(aiRequest);
 
-    // await this.messagesRepository.save({
-    //   ...createMessageDto,
-    //   conversation,
-    //   sender: Sender.user,
-    // });
+    if (res.status === 'detect') {
+      return {
+        status: 'detect',
+        data: '상황에 맞는 주제로 대화하세요',
+        reason: res.reason,
+      };
+    }
 
-    // const messages = await this.messagesRepository.findByConversationId(
-    //   conversationId,
-    //   {
-    //     select: ['sender', 'content'],
-    //     order: { createdAt: 'ASC' },
-    //   },
-    // );
+    await this.messagesRepository.saveMessages([
+      {
+        conversation,
+        content: createMessageDto.content,
+        sender: Sender.user,
+      },
+      {
+        conversation,
+        content: (await res.data).content,
+        sender: Sender.assistant,
+      },
+    ]);
 
-    // const template = this.promptService.buildSituationPrompt(
-    //   conversation.situation,
-    // );
-    // const model = 'gpt-4o-mini';
-    // const context = messages.map((m) => ({
-    //   role: m.sender,
-    //   content: m.content,
-    // }));
-
-    // const res = await this.aiService.askWithContext(template, model, context);
-
-    // await this.messagesRepository.save({
-    //   content: res.content,
-    //   conversation,
-    //   sender: Sender.assistant,
-    // });
-
-    return { data: res };
+    return {
+      status: 'success',
+      data: await res.data,
+    };
   }
 
   async findUserConversationMessages(

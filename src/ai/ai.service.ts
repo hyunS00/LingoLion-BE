@@ -14,8 +14,8 @@ export class AiService {
 
   async askWithContext(
     prompt: string,
-    model?: string,
     context?: CreateMessageDto[],
+    model?: string,
   ): Promise<ChatCompletionMessage> {
     return await this.aiProvider.generateResponseWithContext(
       prompt,
