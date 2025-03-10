@@ -19,7 +19,7 @@ export class ChatGptProvider implements IAIProvider {
 
   async createChatCompletion(
     prompt: string,
-    model: string,
+    model: string = 'gpt-4o-mini',
     messages?: CreateMessageDto[],
   ) {
     try {
@@ -50,14 +50,14 @@ export class ChatGptProvider implements IAIProvider {
 
   async generateResponse(
     prompt: string,
-    model: string,
+    model: string = 'gpt-4o-mini',
   ): Promise<ChatCompletionMessage> {
     return await this.createChatCompletion(prompt, model);
   }
 
   async generateResponseWithContext(
     prompt: string,
-    model: string,
+    model: string = 'gpt-4o-mini',
     messages: CreateMessageDto[],
   ): Promise<ChatCompletionMessage> {
     return this.createChatCompletion(prompt, model, messages);

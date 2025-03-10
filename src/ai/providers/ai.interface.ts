@@ -13,7 +13,7 @@ export interface IAIProvider {
 
   generateResponseWithContext(
     prompt: string,
-    model: string,
+    model?: string,
     messages?: CreateMessageDto[],
   ): Promise<ChatCompletionMessage>;
 }

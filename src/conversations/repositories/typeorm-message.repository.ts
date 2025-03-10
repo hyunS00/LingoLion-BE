@@ -20,6 +20,9 @@ export class TypeOrmMessageRepository
   async save(messageData: Partial<Message>): Promise<Message> {
     return await this.messageRepository.save(messageData);
   }
+  async saveMessages(messagesData: Partial<Message>[]): Promise<Message[]> {
+    return await this.messageRepository.save(messagesData);
+  }
 
   async findByConversationId(
     conversationId: number,

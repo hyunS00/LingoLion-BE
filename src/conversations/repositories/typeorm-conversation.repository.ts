@@ -19,6 +19,17 @@ export class TypeOrmConversationRepository
   ) {
     super(conversationRepository);
   }
+  async findByUserId(
+    userId: string,
+    limit: number = 10,
+  ): Promise<Conversation[]> {
+    const qb = this.conversationRepository
+      .createQueryBuilder('conversation')
+      .where('conversation.userId = :userId', { userId })
+      .orderBy('conversation.createdAt', 'DESC');
+    const conversations = await qb.getMany();
+    return conversations;
+  }
 
   async findOneById(
     id: number,

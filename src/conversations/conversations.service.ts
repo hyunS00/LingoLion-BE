@@ -16,6 +16,8 @@ import { PromptService } from 'src/ai/prompt/prompt.service';
 import { IConversationRepository } from './repositories/conversation.repository.interface';
 import { IMessageRepository } from './repositories/message.repository.interface';
 import { ISituationRepository } from 'src/situations/repositories/situation.repository.interface';
+import { AgentService } from 'src/agent/agent.service';
+import { AiRequestDto } from 'src/agent/dto/ai-request.dto';
 
 @Injectable()
 export class ConversationsService {
@@ -26,8 +28,7 @@ export class ConversationsService {
     private readonly messagesRepository: IMessageRepository,
     @Inject('ISituationRepository')
     private readonly situationRepository: ISituationRepository,
-    private readonly aiService: AiService,
-    private readonly promptService: PromptService,
+    private readonly agentService: AgentService,
   ) {}
 
   async createConversation(
@@ -134,38 +135,14 @@ export class ConversationsService {
       throw new ForbiddenException();
     }
 
-    await this.messagesRepository.save({
-      ...createMessageDto,
-      conversation,
-      sender: Sender.user,
-    });
+    const aiRequest: AiRequestDto = {
+      conversationId: conversationId.toString(),
+      userId,
+      content: createMessageDto.content,
+    };
+    const res = await this.agentService.processMessage(aiRequest);
 
-    const messages = await this.messagesRepository.findByConversationId(
-      conversationId,
-      {
-        select: ['sender', 'content'],
-        order: { createdAt: 'ASC' },
-      },
-    );
-
-    const template = this.promptService.buildSituationPrompt(
-      conversation.situation,
-    );
-    const model = 'gpt-4o-mini';
-    const context = messages.map((m) => ({
-      role: m.sender,
-      content: m.content,
-    }));
-
-    const res = await this.aiService.askWithContext(template, model, context);
-
-    await this.messagesRepository.save({
-      content: res.content,
-      conversation,
-      sender: Sender.assistant,
-    });
-
-    return { data: res };
+    return res;
   }
 
   async findUserConversationMessages(
