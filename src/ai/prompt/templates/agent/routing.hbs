@@ -2,18 +2,23 @@
 아래의 사용자 메시지를 분석하여, 메시지가 어떤 카테고리에 해당하는지 판단하고, 그에 맞는 라우팅 경로를 결정하세요.
 오늘날짜는 {{date}}입니다.
 
-AI 역할: {{situation.aiRole}}
-사용자 역할: {{situation.userRole}}
-장소: {{situation.place}}
-대화 목표: {{situation.goal}}
+AI 역할: {{context.situation.aiRole}}
+사용자 역할: {{context.situation.userRole}}
+장소: {{context.situation.place}}
+대화 목표: {{context.situation.goal}}
 --------------------------------------------------
 사용자 메시지:
 {{content}}
 --------------------------------------------------
 
 이전 대화:
-{{#each history}}
+{{#each context.messages}}
 {{#if this.role}}{{this.role}}: {{this.content}}{{/if}}
+{{/each}}
+
+알고있는 정보:
+{{#each context.relatedInfo}}
+{{this}}
 {{/each}}
 
 분석 지침:
@@ -23,7 +28,7 @@ AI 역할: {{situation.aiRole}}
 5. 최신 정보가 필요하다면 인터넷 검색을 합니다.
 6. 인터넷 검색이 필요하다면 다음과 같이 라우팅 경로를 할당합니다.
 7. 각 카테고리에 따라 다음과 같이 라우팅 경로를 할당합니다:
-   - 맥락에 맞지 않는 대화: "detect"
+   - 맥락에 맞지 않는 대화: "reject"
    - 인터넷 검색: "search"
    - 일반 대화/인사: "chat"
 8. 결정한 라우팅 경로와 간단한 선택 이유를 JSON 형식으로 출력합니다.

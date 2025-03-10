@@ -6,7 +6,7 @@ import { PromptService } from 'src/ai/prompt/prompt.service';
 
 @Module({
   imports: [AiModule, PromptModule],
-  providers: [RoutingService, PromptService],
+  providers: [RoutingService],
   exports: [RoutingService],
 })
 export class RoutingModule {}

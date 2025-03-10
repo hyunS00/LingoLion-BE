@@ -28,8 +28,6 @@ export class ConversationsService {
     private readonly messagesRepository: IMessageRepository,
     @Inject('ISituationRepository')
     private readonly situationRepository: ISituationRepository,
-    private readonly aiService: AiService,
-    private readonly promptService: PromptService,
     private readonly agentService: AgentService,
   ) {}
 
@@ -121,21 +119,6 @@ export class ConversationsService {
     return id;
   }
 
-  private async getConversationHistory(conversationId: number) {
-    const messages = await this.messagesRepository.findByConversationId(
-      conversationId,
-      {
-        select: ['sender', 'content'],
-        order: { createdAt: 'ASC' },
-      },
-    );
-
-    return messages.map((m) => ({
-      role: m.sender,
-      content: m.content,
-    }));
-  }
-
   async createMessageInUserConversation(
     conversationId: number,
     createMessageDto: CreateMessageDto,
@@ -151,49 +134,15 @@ export class ConversationsService {
     if (!conversation) {
       throw new ForbiddenException();
     }
-    const history = await this.getConversationHistory(conversationId);
 
     const aiRequest: AiRequestDto = {
       conversationId: conversationId.toString(),
       userId,
       content: createMessageDto.content,
-      context: {
-        situation: {
-          userRole: conversation.situation.userRole,
-          aiRole: conversation.situation.aiRole,
-          place: conversation.situation.place,
-          goal: conversation.situation.goal,
-        },
-        history,
-      },
     };
     const res = await this.agentService.processMessage(aiRequest);
 
-    if (res.status === 'detect') {
-      return {
-        status: 'detect',
-        data: '상황에 맞는 주제로 대화하세요',
-        reason: res.reason,
-      };
-    }
-
-    await this.messagesRepository.saveMessages([
-      {
-        conversation,
-        content: createMessageDto.content,
-        sender: Sender.user,
-      },
-      {
-        conversation,
-        content: (await res.data).content,
-        sender: Sender.assistant,
-      },
-    ]);
-
-    return {
-      status: 'success',
-      data: await res.data,
-    };
+    return res;
   }
 
   async findUserConversationMessages(

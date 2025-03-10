@@ -1,7 +1,6 @@
 import { Sender } from 'src/conversations/entities/message.entity';
 
-export interface AiRequestDto {
-  conversationId: string;
-  userId: string;
+export class MessageDto {
+  role: Sender;
   content: string;
 }

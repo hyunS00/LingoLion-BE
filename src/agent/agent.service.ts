@@ -1,57 +1,76 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RoutingService } from './routing/routing.service';
 import { AiRequestDto } from './dto/ai-request.dto';
 import { AiService } from 'src/ai/ai.service';
 import { PromptService } from 'src/ai/prompt/prompt.service';
 import { SearchService } from './search/search.service';
+import { ContextManagerService } from './context-manager/context-manager.service';
+import { Sender } from 'src/conversations/entities/message.entity';
 
 @Injectable()
 export class AgentService {
+  private readonly logger = new Logger(AgentService.name, { timestamp: true });
   constructor(
     private readonly routingService: RoutingService,
     private readonly aiService: AiService,
     private readonly promptService: PromptService,
     private readonly searchService: SearchService,
+    private readonly contextManager: ContextManagerService,
   ) {}
 
   async processMessage(request: AiRequestDto) {
-    const tasks = await this.routingService.getRoutingDecision(request);
-    console.log('routing: ', tasks);
+    this.logger.log(`컨텍스트 조회: ${request}`);
+    const context = await this.contextManager.getConversationContext(
+      request.conversationId,
+      request.userId,
+    );
 
-    if (tasks.route === 'detect') {
+    this.logger.log(`의도분석: ${request} 컨텍스트:${context}`);
+    const tasks = await this.routingService.getRoutingDecision(
+      request.content,
+      context,
+    );
+
+    if (tasks.route === 'reject') {
+      this.logger.log(
+        `REJECT-> 의도분석: ${request} 컨텍스트:${context} 의도: ${tasks}`,
+      );
       return {
-        status: 'detect',
+        status: 'reject',
         reason: tasks.reason,
       };
     }
 
     if (tasks.route === 'search') {
-      const searchResults = await this.searchService.aggregate(request.content);
-      console.log('검색 결과 수집:', searchResults.resultCount || '결과 없음');
+      this.logger.log(
+        `search-> 검색 필요 의도분석: ${request} 컨텍스트:${context} 의도: ${tasks}`,
+      );
+      const searchResults = await this.searchService.aggregate(
+        request.content,
+        context,
+      );
 
-      // 중요: 검색 결과를 request.context에 추가
-      request.context.searchResults = searchResults;
-
-      // 템플릿에서 사용할 검색 내용 형식화
-      request.context.searchContent = searchResults.results
-        .map((result, index) => ({
-          index: index + 1,
-          title: result.title,
-          content: result.content,
-          url: result.url,
-        }))
-        .slice(0, 3); // 상위 3개 결과만 사용
+      context.relatedInfo = searchResults;
+      this.logger.log(`검색 결과 -> 컨텍스트:${context}`);
     }
 
     // handlebars 템플릿 동적 처리
-    const prompt = this.promptService.buildSituationPrompt(request.context);
-
-    console.log('ask:', prompt);
-
-    const response = this.aiService.askWithContext(
-      prompt,
-      request.context.history,
+    const prompt = this.promptService.buildSituationPrompt({
+      content: request.content,
+      context,
+    });
+    this.logger.log(`응답 요청 ->  ${request} 컨텍스트:${context}`);
+    const response = await this.aiService.ask(prompt);
+    this.logger.log(`응답 결과 -> ${response}`);
+    context.messages.push(
+      { role: Sender.user, content: request.content },
+      {
+        role: response.role as Sender,
+        content: response.content,
+      },
     );
+    this.logger.log(`응답 컨텍스트 반영 -> ${request} 컨텍스트:${context}`);
+    this.contextManager.saveContext(request.conversationId, context);
     return { status: 'done', data: response };
   }
 }
