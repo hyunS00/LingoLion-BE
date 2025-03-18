@@ -1,99 +1,95 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🦁 Lingo Lion
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+### 사용자 맞춤형 상황별 AI 영어회화 서비스
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<br>
 
-## Description
+<div align=center>
+  <img width="200px;" src="https://github.com/user-attachments/assets/c1bc9d91-2d87-4f7c-af89-cf79589e38bd"/>
+</div>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<br>
 
-## Project setup
+> **맞춤형 영어회화 연습을 위한 AI 에이전트 서비스** <br/> **개발기간: 2025.02 ~ 진행중**
 
-```bash
-$ pnpm install
-```
+<br>
 
-## Compile and run the project
+## 🦁 프로젝트 소개
 
-```bash
-# development
-$ pnpm run start
+**Lingo Lion**은 AI 기반의 맞춤형 영어회화 연습 서비스입니다. 사용자의 수준과 관심사에 맞는 다양한 상황에서 자연스러운 영어 대화를 경험할 수 있습니다.
 
-# watch mode
-$ pnpm run start:dev
+### ✔ 서비스 핵심 가치
 
-# production mode
-$ pnpm run start:prod
-```
+- **접근성**: 시간과 장소에 구애받지 않고 언제 어디서나 영어 회화 연습
+- **맞춤형 학습**: 사용자의 수준과 관심사에 맞는 상황별 대화 시나리오 제공
+  <!-- - **실시간 피드백**: 즉각적인 문법 교정과 표현 개선 제안 -->
+  <!-- - **지속적 성장**: 학습 진행 상황을 추적하여 효과적인 영어 실력 향상 지원 -->
 
-## Run tests
+<br>
 
-```bash
-# unit tests
-$ pnpm run test
+## ⚙ 시스템 아키텍처
 
-# e2e tests
-$ pnpm run test:e2e
+### 백엔드 아키텍처
 
-# test coverage
-$ pnpm run test:cov
-```
+<div align=center>
+  <img width="800" alt="백엔드 아키텍처" src="https://github.com/user-attachments/assets/2630edd0-ee42-44e9-b06e-c8c7f2de3a8b">
+</div>
 
-## Deployment
+### AWS 인프라
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+<div align=center>
+  <img width="800" alt="AWS 인프라" src="https://github.com/user-attachments/assets/4349e750-3baf-4230-9feb-db670e90ddd3">
+</div>
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Agent 워크플로우
 
-```bash
-$ pnpm install -g mau
-$ mau deploy
-```
+<div align=center>
+  <img width="800" alt="AWS 인프라" src="https://github.com/user-attachments/assets/71cabf2b-7dc1-4a87-895c-5e68623c8a13">
+</div>
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+<br>
 
-## Resources
+## 💡 주요 기능
 
-Check out a few resources that may come in handy when working with NestJS:
+### 상황별 맞춤 영어회화
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **다양한 대화 상황**: 식당, 병원, 호텔, 면접 등 실생활에서 마주할 수 있는 다양한 상황 제공
+- **역할 플레이**: AI가 웨이터, 의사, 면접관 등 다양한 역할을 수행하여 실제 상황과 유사한 대화 경험 제공
+<!-- - **난이도 조절**: 초급, 중급, 고급 등 사용자 수준에 맞는 대화 난이도 설정 -->
 
-## Support
+### AI 대화 에이전트
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- **자연스러운 대화**: OpenAI의 최신 LLM을 활용한 자연스럽고 맥락을 이해하는 대화 진행
+- **문법 교정**: 사용자의 영어 표현에 대한 자연스러운 문법 교정 제공
+- **검색 기능**: 최신 정보나 전문적인 내용이 필요할 때 Tavily API를 통한 정보 검색 및 통합
 
-## Stay in touch
+### 안전한 인증 시스템
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **JWT + Opaque 토큰**: JWT Access Token과 Opaque Refresh Token을 활용한 이중 보안 인증
+- **HTTP-only 쿠키**: 중요 인증 정보는 HTTP-only 쿠키에 저장하여 XSS 공격 방어
+- **권한 관리**: 사용자 역할 기반의 접근 제어
 
-## License
+<br>
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 🛠 기술 스택
+
+### 백엔드
+
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![TypeORM](https://img.shields.io/badge/TypeORM-F37626?style=for-the-badge&logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
+![Tavily](https://img.shields.io/badge/Tavily-000000?style=for-the-badge&logo=search&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Passport](https://img.shields.io/badge/Passport-34E27A?style=for-the-badge&logo=passport&logoColor=white)
+![Handlebars](https://img.shields.io/badge/Handlebars-F0772B?style=for-the-badge&logo=handlebarsdotjs&logoColor=white)
+
+### 인프라 및 배포
+
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+<!-- ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white) -->
+
+![Neon](https://img.shields.io/badge/Neon-00E699?style=for-the-badge&logo=neon&logoColor=white)
