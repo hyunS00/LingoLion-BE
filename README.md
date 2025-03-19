@@ -37,13 +37,17 @@
   <img width="800" alt="백엔드 아키텍처" src="https://github.com/user-attachments/assets/2630edd0-ee42-44e9-b06e-c8c7f2de3a8b">
 </div>
 
-### AWS 인프라
+<div id="aws">
+  <h3>AWS 인프라</h3>
+</div>
 
 <div align=center>
   <img width="800" alt="AWS 인프라" src="https://github.com/user-attachments/assets/4349e750-3baf-4230-9feb-db670e90ddd3">
 </div>
 
-### Agent 워크플로우
+<div id="agent">
+  <h3>Agent 워크플로우</h3>
+</div>
 
 <div align=center>
   <img width="800" alt="AWS 인프라" src="https://github.com/user-attachments/assets/71cabf2b-7dc1-4a87-895c-5e68623c8a13">
