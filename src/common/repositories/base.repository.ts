@@ -27,7 +27,7 @@ export abstract class BaseRepository<
     if (cursor) {
       const decodedCursor = validateDateIdCursor(cursor);
       const direction = sortDirection === 'DESC' ? '<' : '>';
-      qb.where(
+      qb.andWhere(
         `(${qb.alias}.id, ${qb.alias}.createdAt) ${direction} (:id, :createdAt)`,
         decodedCursor,
       );
