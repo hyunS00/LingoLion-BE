@@ -10,6 +10,8 @@ import {
   ClassSerializerInterceptor,
   ParseIntPipe,
   Query,
+  Sse,
+  Res,
 } from '@nestjs/common';
 import { ConversationsService } from './conversations.service';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
@@ -19,6 +21,7 @@ import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/users/entities/user.entity';
 import { AuthUser } from 'src/users/decorator/authUser.decorator';
 import { CursorPaginationDto } from 'src/common/dto/cursor-pagination.dto';
+import { Response } from 'express';
 
 @Controller('conversations')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -108,5 +111,32 @@ export class ConversationsController {
       createMessageDto,
       userId,
     );
+  }
+
+  @Post(':id/message/stream')
+  async createMessageForConversationStream(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createMessageDto: CreateMessageDto,
+    @AuthUser('id') userId: string,
+    @Res() res: Response,
+  ) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const stream =
+      await this.conversationsService.createMessageInUserConversationStream(
+        id,
+        createMessageDto,
+        userId,
+      );
+
+    for await (const chunk of stream) {
+      res.write(`data: ${JSON.stringify(chunk)}\n\n`);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    res.write('data: [DONE]\n\n');
+    res.end();
   }
 }

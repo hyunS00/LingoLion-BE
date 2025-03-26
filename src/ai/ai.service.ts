@@ -23,4 +23,12 @@ export class AiService {
       context,
     );
   }
+
+  async askStream(
+    prompt: string,
+    context?: CreateMessageDto[],
+    model?: string,
+  ): Promise<AsyncIterable<ChatCompletionMessage>> {
+    return await this.aiProvider.generateStreamResponse(prompt, model);
+  }
 }

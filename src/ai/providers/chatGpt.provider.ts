@@ -62,4 +62,45 @@ export class ChatGptProvider implements IAIProvider {
   ): Promise<ChatCompletionMessage> {
     return this.createChatCompletion(prompt, model, messages);
   }
+
+  async generateStreamResponse(
+    prompt: string,
+    model: string = 'gpt-4o-mini',
+    messages: CreateMessageDto[] = [],
+  ): Promise<AsyncIterable<ChatCompletionMessage>> {
+    try {
+      const stream = await this.openAI.chat.completions.create({
+        model,
+        stream: true,
+        messages: [
+          {
+            role: 'system',
+            content: prompt,
+          },
+          ...messages,
+        ],
+      });
+
+      const asyncIterable = {
+        async *[Symbol.asyncIterator]() {
+          for await (const chunk of stream as any) {
+            const delta = chunk.choices?.[0]?.delta;
+            if (!delta) continue;
+
+            yield {
+              content: delta.content || '',
+              role: delta.role || 'assistant',
+            };
+          }
+        },
+      };
+
+      return asyncIterable;
+    } catch (e) {
+      console.error(e);
+      throw new ServiceUnavailableException(
+        'AI 스트리밍 서비스를 일시적으로 사용할 수 없습니다.',
+      );
+    }
+  }
 }
