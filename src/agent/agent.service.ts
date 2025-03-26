@@ -73,4 +73,68 @@ export class AgentService {
     this.contextManager.saveContext(request.conversationId, context);
     return { status: 'done', data: response };
   }
+
+  async processMessageStream(request: AiRequestDto) {
+    const context = await this.contextManager.getConversationContext(
+      request.conversationId,
+      request.userId,
+    );
+
+    const tasks = await this.routingService.getRoutingDecision(
+      request.content,
+      context,
+    );
+
+    // reject인 경우, 단일 스트림으로 거절 메시지 전송
+    if (tasks.route === 'reject') {
+      async function* rejectStream() {
+        yield {
+          role: 'assistant',
+          content: tasks.reason ?? '죄송합니다. 대화를 진행할 수 없습니다.',
+          refusal: true,
+        };
+      }
+      return rejectStream();
+    }
+
+    // 검색인 경우, 관련 정보를 context에 반영
+    if (tasks.route === 'search') {
+      const searchResults = await this.searchService.aggregate(
+        request.content,
+        context,
+      );
+      context.relatedInfo = searchResults;
+    }
+
+    const prompt = this.promptService.buildSituationPrompt({
+      content: request.content,
+      context,
+    });
+
+    // GPT 응답 스트림 받기
+    const stream = await this.aiService.askStream(prompt);
+
+    // 상위 this 캡처
+    const self = this;
+
+    // 스트림 전체 조각을 모아서 context에 저장하는 래퍼 스트림
+    async function* wrappedStream() {
+      const fullChunks: string[] = [];
+      for await (const chunk of stream) {
+        fullChunks.push(chunk.content);
+        yield chunk; // 클라이언트에 실시간 전송
+      }
+
+      // 스트림 종료 후 전체 메시지를 context에 저장
+      context.messages.push(
+        { role: Sender.user, content: request.content },
+        { role: Sender.assistant, content: fullChunks.join('') },
+      );
+
+      self.contextManager.saveContext(request.conversationId, context);
+      self.logger.log(`응답 컨텍스트 반영 완료`);
+    }
+
+    return wrappedStream();
+  }
 }

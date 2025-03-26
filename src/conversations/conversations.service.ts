@@ -145,6 +145,32 @@ export class ConversationsService {
     return res;
   }
 
+  async createMessageInUserConversationStream(
+    conversationId: number,
+    createMessageDto: CreateMessageDto,
+    userId: string,
+  ) {
+    const relations = ['situation'];
+    const conversation = await this.conversationRepository.findOneByIdAndUserId(
+      conversationId,
+      userId,
+      relations,
+    );
+
+    if (!conversation) {
+      throw new ForbiddenException();
+    }
+
+    const aiRequest: AiRequestDto = {
+      conversationId: conversationId.toString(),
+      userId,
+      content: createMessageDto.content,
+    };
+    const res = await this.agentService.processMessageStream(aiRequest);
+
+    return res;
+  }
+
   async findUserConversationMessages(
     id: number,
     userId: string,

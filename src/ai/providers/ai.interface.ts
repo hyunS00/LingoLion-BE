@@ -16,4 +16,10 @@ export interface IAIProvider {
     model?: string,
     messages?: CreateMessageDto[],
   ): Promise<ChatCompletionMessage>;
+
+  generateStreamResponse(
+    prompt: string,
+    model?: string,
+    messages?: CreateMessageDto[],
+  ): Promise<AsyncIterable<ChatCompletionMessage>>;
 }
