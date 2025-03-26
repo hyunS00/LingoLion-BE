@@ -97,6 +97,8 @@
       "bcrypt"
     ],
     "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@scarf/scarf",
       "bcrypt"
     ]
   }
