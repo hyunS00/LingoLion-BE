@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Options,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UserIdRoleDto } from '../users/dto/userIdRole.dto';
@@ -42,6 +50,16 @@ export class AuthController {
     });
 
     return 'logout ok';
+  }
+
+  @Public()
+  @Options('refresh')
+  handleOptions(@Res() res: Response) {
+    res.header('Access-Control-Allow-Origin', 'https://www.lingolion.xyz');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(204);
   }
 
   @Public()
