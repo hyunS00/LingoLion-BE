@@ -9,7 +9,7 @@ async function bootstrap() {
     logger: new ConsoleLogger(),
   });
   app.enableCors({
-    origin: ['https://lingolino.xyz', 'https://www.lingolino.xyz'],
+    origin: ['https://lingolion.xyz', 'https://www.lingolion.xyz'],
     credentials: true,
     exposedHeaders: ['Authorization'],
   });
