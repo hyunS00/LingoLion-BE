@@ -8,6 +8,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new ConsoleLogger(),
   });
+  app.enableCors({
+    origin: ['https://lingolino.xyz', 'https://www.lingolino.xyz'],
+    credentials: true,
+    exposedHeaders: ['Authorization'],
+  });
   app.use(cookieParser());
   const config = new DocumentBuilder()
     .setTitle('Lingo Lion')
