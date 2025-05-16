@@ -27,7 +27,7 @@ export class FeedbackController {
   @Post(':userId')
   @Roles(Role.Admin)
   create(
-    @Param('userId') userId: string,
+    @Param('id') userId: string,
     @Body() createFeedbackDto: CreateFeedbackDto,
   ) {
     return this.feedbackService.create(userId, createFeedbackDto);
@@ -43,7 +43,7 @@ export class FeedbackController {
 
   @Get('conversation/:conversationId')
   findConversationFeedback(
-    @AuthUser('userID') userId: string,
+    @AuthUser('id') userId: string,
     @Param('conversationId', ParseIntPipe) conversationId: number,
     @Query() cursorPaginationDto: CursorPaginationDto,
   ) {

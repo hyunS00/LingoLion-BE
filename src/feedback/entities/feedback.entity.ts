@@ -16,6 +16,6 @@ export class Feedback extends BaseTimeEntity {
   })
   conversation: Conversation;
 
-  @ManyToOne(() => User, (user) => user.feedback)
+  @ManyToOne(() => User, (user) => user.feedback, { nullable: false })
   user: User;
 }

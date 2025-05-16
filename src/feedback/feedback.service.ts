@@ -23,7 +23,7 @@ export class FeedbackService {
   ) {}
 
   async create(userId: string, createFeedbackDto: CreateFeedbackDto) {
-    const user = this.userRepository.findOneById(userId);
+    const user = await this.userRepository.findOneById(userId);
     if (!user) throw new UnauthorizedException();
 
     await this.feedbackRepository.save({ id: userId }, createFeedbackDto);
