@@ -64,7 +64,7 @@ importers:
         version: 4.7.8
       openai:
         specifier: ^4.79.1
-        version: 4.79.1
+        version: 4.79.1(zod@3.24.2)
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -3388,6 +3388,9 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+
 snapshots:
 
   '@ampproject/remapping@2.3.0':
@@ -6198,7 +6201,7 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  openai@4.79.1:
+  openai@4.79.1(zod@3.24.2):
     dependencies:
       '@types/node': 18.19.71
       '@types/node-fetch': 2.6.12
@@ -6207,6 +6210,8 @@ snapshots:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
+    optionalDependencies:
+      zod: 3.24.2
     transitivePeerDependencies:
       - encoding
 
@@ -7070,3 +7075,6 @@ snapshots:
   yn@3.1.1: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.24.2:
+    optional: true

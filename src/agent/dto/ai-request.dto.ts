@@ -1,7 +1,7 @@
 import { Sender } from 'src/conversations/entities/message.entity';
 
 export interface AiRequestDto {
-  conversationId: string;
+  conversationId: number;
   userId: string;
   content: string;
 }

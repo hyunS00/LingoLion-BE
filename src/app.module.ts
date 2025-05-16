@@ -21,6 +21,8 @@ import { RefreshToken } from './auth/entities/refresh.entity';
 import { AiModule } from './ai/ai.module';
 import { Situation } from './situations/entities/situation.entity';
 import { AgentModule } from './agent/agent.module';
+import { FeedbackModule } from './feedback/feedback.module';
+import { Feedback } from './feedback/entities/feedback.entity';
 
 @Module({
   imports: [
@@ -35,7 +37,14 @@ import { AgentModule } from './agent/agent.module';
         database: configService.get<string>('DB_DATABASE'),
         synchronize: configService.get<string>('NODE_ENV') !== 'prod',
         ssl: configService.get<string>('NODE_ENV') === 'prod',
-        entities: [Conversation, Message, Situation, User, RefreshToken],
+        entities: [
+          Conversation,
+          Message,
+          Situation,
+          User,
+          RefreshToken,
+          Feedback,
+        ],
       }),
       inject: [ConfigService],
     }),
@@ -45,6 +54,7 @@ import { AgentModule } from './agent/agent.module';
     UsersModule,
     AiModule,
     AgentModule,
+    FeedbackModule,
   ],
   controllers: [],
   providers: [
@@ -65,6 +75,7 @@ export class AppModule implements NestModule {
       .exclude({ path: 'auth/login', method: RequestMethod.POST })
       .exclude({ path: 'auth/join', method: RequestMethod.POST })
       .exclude({ path: 'auth/refresh', method: RequestMethod.POST })
+      .exclude({ path: 'feedback/:userId', method: RequestMethod.ALL })
       .forRoutes('*');
   }
 }

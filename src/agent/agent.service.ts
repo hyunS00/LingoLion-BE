@@ -6,6 +6,7 @@ import { PromptService } from 'src/ai/prompt/prompt.service';
 import { SearchService } from './search/search.service';
 import { ContextManagerService } from './context-manager/context-manager.service';
 import { Sender } from 'src/conversations/entities/message.entity';
+import { FeedbackService } from './feedback/feedback.service';
 
 @Injectable()
 export class AgentService {
@@ -15,6 +16,7 @@ export class AgentService {
     private readonly aiService: AiService,
     private readonly promptService: PromptService,
     private readonly searchService: SearchService,
+    private readonly feedbackService: FeedbackService,
     private readonly contextManager: ContextManagerService,
   ) {}
 
@@ -41,18 +43,20 @@ export class AgentService {
       };
     }
 
-    if (tasks.route === 'search') {
-      this.logger.log(
-        `search-> 검색 필요 의도분석: ${request} 컨텍스트:${context} 의도: ${tasks}`,
-      );
-      const searchResults = await this.searchService.aggregate(
-        request.content,
-        context,
-      );
+    // if (tasks.route === 'search') {
+    //   this.logger.log(
+    //     `search-> 검색 필요 의도분석: ${request} 컨텍스트:${context} 의도: ${tasks}`,
+    //   );
+    //   const searchResults = await this.searchService.aggregate(
+    //     request.content,
+    //     context,
+    //   );
 
-      context.relatedInfo = searchResults;
-      this.logger.log(`검색 결과 -> 컨텍스트:${context}`);
-    }
+    //   context.relatedInfo = searchResults;
+    //   this.logger.log(`검색 결과 -> 컨텍스트:${context}`);
+    // }
+
+    const feedback = this.feedbackService.getFeedback(request, context);
 
     // handlebars 템플릿 동적 처리
     const prompt = this.promptService.buildSituationPrompt({
@@ -98,13 +102,15 @@ export class AgentService {
     }
 
     // 검색인 경우, 관련 정보를 context에 반영
-    if (tasks.route === 'search') {
-      const searchResults = await this.searchService.aggregate(
-        request.content,
-        context,
-      );
-      context.relatedInfo = searchResults;
-    }
+    // if (tasks.route === 'search') {
+    //   const searchResults = await this.searchService.aggregate(
+    //     request.content,
+    //     context,
+    //   );
+    //   context.relatedInfo = searchResults;
+    // }
+
+    await this.feedbackService.getFeedback(request, context);
 
     const prompt = this.promptService.buildSituationPrompt({
       content: request.content,
