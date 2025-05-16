@@ -2,6 +2,7 @@ import { Exclude, Transform } from 'class-transformer';
 import { RefreshToken } from 'src/auth/entities/refresh.entity';
 import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
 import { Conversation } from 'src/conversations/entities/conversation.entity';
+import { Feedback } from 'src/feedback/entities/feedback.entity';
 import { Situation } from 'src/situations/entities/situation.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -45,4 +46,7 @@ export class User extends BaseTimeEntity {
 
   @OneToMany(() => Conversation, (conversation) => conversation.user)
   conversations: Conversation[];
+
+  @OneToMany(() => Feedback, (feedback) => feedback.user)
+  feedback: Feedback[];
 }

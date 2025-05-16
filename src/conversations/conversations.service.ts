@@ -136,7 +136,7 @@ export class ConversationsService {
     }
 
     const aiRequest: AiRequestDto = {
-      conversationId: conversationId.toString(),
+      conversationId,
       userId,
       content: createMessageDto.content,
     };
@@ -162,7 +162,7 @@ export class ConversationsService {
     }
 
     const aiRequest: AiRequestDto = {
-      conversationId: conversationId.toString(),
+      conversationId,
       userId,
       content: createMessageDto.content,
     };

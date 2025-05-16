@@ -7,7 +7,7 @@ import { Conversation } from 'src/conversations/entities/conversation.entity';
 
 @Injectable()
 export class ContextManagerService {
-  private memory: Map<string, Context> = new Map();
+  private memory: Map<number, Context> = new Map();
   private readonly logger = new Logger(ContextManagerService.name, {
     timestamp: true,
   });
@@ -19,7 +19,7 @@ export class ContextManagerService {
   ) {}
 
   async getConversationContext(
-    conversationId: string,
+    conversationId: number,
     userId: string,
   ): Promise<Context> {
     this.logger.log(`${conversationId}:${userId} 컨텍스트 조회`);
@@ -56,7 +56,7 @@ export class ContextManagerService {
     return context;
   }
 
-  saveContext(conversationId: string, context: Context): void {
+  saveContext(conversationId: number, context: Context): void {
     this.memory.set(conversationId, context);
     const { messages } = context;
     const userMessage = messages[messages.length - 2];

@@ -11,6 +11,7 @@ import { Message } from './message.entity';
 import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
 import { Situation } from 'src/situations/entities/situation.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Feedback } from 'src/feedback/entities/feedback.entity';
 
 @Entity()
 export class Conversation extends BaseTimeEntity {
@@ -33,4 +34,7 @@ export class Conversation extends BaseTimeEntity {
 
   @ManyToOne(() => User, (user) => user.conversations, { nullable: false })
   user: User;
+
+  @OneToMany(() => Feedback, (feedback) => feedback.conversation)
+  feedback: Feedback[];
 }

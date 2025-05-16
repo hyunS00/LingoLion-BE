@@ -8,6 +8,7 @@ import { PromptModule } from 'src/ai/prompt/prompt.module';
 import { SearchService } from './search/search.service';
 import { ContextManagerModule } from './context-manager/context-manager.module';
 import { ContextManagerService } from './context-manager/context-manager.service';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ContextManagerService } from './context-manager/context-manager.service
     PromptModule,
     SearchModule,
     ContextManagerModule,
+    FeedbackModule,
   ],
   providers: [AgentService],
   exports: [AgentService],
