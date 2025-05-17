@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AiService } from 'src/ai/ai.service';
 import { PromptService } from 'src/ai/prompt/prompt.service';
-import { CreateMessageDto } from 'src/conversations/dto/create-message.dto';
-import { AiRequestDto } from '../dto/ai-request.dto';
 import { Context } from '../context-manager/dto/context.interface';
 
 @Injectable()

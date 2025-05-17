@@ -37,6 +37,7 @@ import { Feedback } from './feedback/entities/feedback.entity';
         database: configService.get<string>('DB_DATABASE'),
         synchronize: configService.get<string>('NODE_ENV') !== 'prod',
         ssl: configService.get<string>('NODE_ENV') === 'prod',
+        logging: true,
         entities: [
           Conversation,
           Message,

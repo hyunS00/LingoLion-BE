@@ -5,14 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { Message, Sender } from './entities/message.entity';
 import { CreateConversationDto } from './dto/create-conversation.dto';
-import { AiService } from 'src/ai/ai.service';
-import { Situation } from 'src/situations/entities/situation.entity';
-import { PromptService } from 'src/ai/prompt/prompt.service';
 import { IConversationRepository } from './repositories/conversation.repository.interface';
 import { IMessageRepository } from './repositories/message.repository.interface';
 import { ISituationRepository } from 'src/situations/repositories/situation.repository.interface';

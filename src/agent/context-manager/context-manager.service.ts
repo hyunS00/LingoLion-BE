@@ -2,7 +2,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Context } from './dto/context.interface';
 import { IConversationRepository } from 'src/conversations/repositories/conversation.repository.interface';
 import { IMessageRepository } from 'src/conversations/repositories/message.repository.interface';
-import { CreateMessageDto } from 'src/conversations/dto/create-message.dto';
 import { Conversation } from 'src/conversations/entities/conversation.entity';
 
 @Injectable()

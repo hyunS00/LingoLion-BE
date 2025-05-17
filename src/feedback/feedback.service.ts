@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
-import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { IFeedbackRepository } from './repositories/feedback.repository.interface';
 import { IUserRepository } from 'src/users/repositories/user.repository.interface';
 import { CursorPaginationDto } from 'src/common/dto/cursor-pagination.dto';

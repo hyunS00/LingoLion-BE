@@ -1,6 +1,5 @@
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import {
-  decodeCursor,
   encodeCursorObj,
   validateDateIdCursor,
 } from '../utils/pagination.util';
