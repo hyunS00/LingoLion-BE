@@ -1,10 +1,4 @@
-import {
-  IsEnum,
-  IsIn,
-  IsOptional,
-  IsString,
-  ValidateIf,
-} from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 import { SituationType } from '../entities/situation.entity';
 import { PartialType } from '@nestjs/mapped-types';
 import { SituationDto } from './situation.dto';

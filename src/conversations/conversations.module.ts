@@ -11,7 +11,6 @@ import { TypeOrmConversationRepository } from './repositories/typeorm-conversati
 import { TypeOrmMessageRepository } from './repositories/typeorm-message.repository';
 import { TypeOrmSituationRepository } from 'src/situations/repositories/typeorm-situation.repository';
 import { AgentModule } from 'src/agent/agent.module';
-import { AgentService } from 'src/agent/agent.service';
 
 @Module({
   imports: [

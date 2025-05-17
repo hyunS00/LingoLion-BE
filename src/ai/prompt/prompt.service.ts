@@ -3,7 +3,6 @@ import { readdirSync, readFileSync, statSync } from 'fs';
 import * as Handlebars from 'handlebars';
 import { basename, extname, join } from 'path';
 import { SituationRecommendDto } from 'src/situations/dto/situation-recommend.dto';
-import { SituationDto } from 'src/situations/dto/situation.dto';
 
 @Injectable()
 export class PromptService {

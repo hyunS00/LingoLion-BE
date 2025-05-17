@@ -10,7 +10,6 @@ import {
   ClassSerializerInterceptor,
   ParseIntPipe,
   Query,
-  Sse,
   Res,
 } from '@nestjs/common';
 import { ConversationsService } from './conversations.service';

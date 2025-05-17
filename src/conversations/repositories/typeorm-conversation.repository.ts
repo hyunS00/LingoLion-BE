@@ -3,9 +3,8 @@ import { Conversation } from '../entities/conversation.entity';
 import { IConversationRepository } from './conversation.repository.interface';
 import { Repository } from 'typeorm';
 import { UpdateConversationDto } from '../dto/update-conversation.dto';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
-import { validateCursorId } from 'src/common/utils/pagination.util';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 
 @Injectable()

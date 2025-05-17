@@ -1,6 +1,5 @@
 import {
   IsDefined,
-  IsEmail,
   IsEnum,
   IsNumber,
   IsString,

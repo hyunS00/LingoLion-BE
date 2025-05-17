@@ -2,7 +2,7 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { Message } from '../entities/message.entity';
 import { IMessageRepository } from './message.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 
