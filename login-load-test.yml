@@ -1,0 +1,16 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 100
+      arrivalRate: 100
+  payload:
+    path: 'basicToken.csv'
+    fields:
+      - 'token'
+scenarios:
+  - name: 'login'
+    flow:
+      - post:
+          url: '/auth/login'
+          headers:
+            Authorization: 'Basic {{ token }}'
