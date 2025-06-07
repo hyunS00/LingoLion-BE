@@ -56,8 +56,6 @@ export class AgentService {
     //   this.logger.log(`검색 결과 -> 컨텍스트:${context}`);
     // }
 
-    const feedback = this.feedbackService.getFeedback(request, context);
-
     // handlebars 템플릿 동적 처리
     const prompt = this.promptService.buildSituationPrompt({
       content: request.content,

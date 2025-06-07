@@ -48,11 +48,13 @@ export class TypeOrmFeedbackRepository
   async save(
     user: { id: string },
     createFeedbackDto: CreateFeedbackDto,
+    message?: string,
   ): Promise<Feedback> {
     return await this.feedbackRepository.save({
       ...createFeedbackDto,
       conversation: { id: createFeedbackDto.conversationId },
       user,
+      message,
     });
   }
 

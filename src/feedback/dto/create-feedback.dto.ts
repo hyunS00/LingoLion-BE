@@ -5,5 +5,5 @@ export class CreateFeedbackDto {
   conversationId: number;
 
   @IsString()
-  content: string;
+  detailedFeedback: string;
 }

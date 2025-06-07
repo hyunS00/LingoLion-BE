@@ -18,6 +18,7 @@ export interface IFeedbackRepository {
   save(
     user: { id: string },
     createFeedbackDto: CreateFeedbackDto,
+    message?: string,
   ): Promise<Feedback>;
   update(id: number, updateData: UpdateFeedbackDto): Promise<void>;
   delete(id: number): Promise<void>;
