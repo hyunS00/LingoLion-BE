@@ -22,9 +22,16 @@ export class FeedbackService {
 
     const response = await this.aiService.ask(prompt);
 
+    const parsedResponse = JSON.parse(response.content);
+    console.log(parsedResponse);
+
     await this.feedbackRepository.save(
       { id: request.userId },
-      { conversationId: request.conversationId, content: response.content },
+      {
+        conversationId: request.conversationId,
+        detailedFeedback: parsedResponse,
+      },
+      request.content,
     );
   }
 }
