@@ -4,6 +4,20 @@ import { Conversation } from 'src/conversations/entities/conversation.entity';
 import { User } from 'src/users/entities/user.entity';
 import { PrimaryGeneratedColumn, ManyToOne, Column, Entity } from 'typeorm';
 
+export class DetailedFeedback {
+  feedbackType:
+    | 'VOCABULARY'
+    | 'GRAMMAR'
+    | 'PRONUNCIATION'
+    | 'FLUENCY'
+    | 'REGISTER'
+    | 'OTHER';
+  explanation: string;
+  originalExpression: string;
+  suggestedCorrection: string;
+  examples: string[];
+}
+
 @Entity()
 export class Feedback extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
@@ -17,7 +31,7 @@ export class Feedback extends BaseTimeEntity {
       return value;
     }
   })
-  detailedFeedback: Object;
+  detailedFeedback: DetailedFeedback;
 
   @Column()
   message: string;
