@@ -4,6 +4,8 @@ import { PromptService } from 'src/ai/prompt/prompt.service';
 import { Context } from '../context-manager/dto/context.interface';
 import { IFeedbackRepository } from 'src/feedback/repositories/feedback.repository.interface';
 import { AiRequestDto } from '../dto/ai-request.dto';
+import { plainToInstance } from 'class-transformer';
+import { DetailedFeedback } from 'src/feedback/entities/feedback.entity';
 
 @Injectable()
 export class FeedbackService {
@@ -23,13 +25,14 @@ export class FeedbackService {
     const response = await this.aiService.ask(prompt);
 
     const parsedResponse = JSON.parse(response.content);
-    console.log(parsedResponse);
+
+    const detailedFeedback = plainToInstance(DetailedFeedback, parsedResponse);
 
     await this.feedbackRepository.save(
       { id: request.userId },
       {
         conversationId: request.conversationId,
-        detailedFeedback: parsedResponse,
+        detailedFeedback,
       },
       request.content,
     );
